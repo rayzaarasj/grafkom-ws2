@@ -42,12 +42,14 @@ var UPPER_FINGER_WIDTH  = 0.6;
 var PINKIE_HEIGHT = 1.5;
 var RING_HEIGHT = 1.7;
 var MIDDLE_HEIGHT = 1.9;
+var INDEX_HEIGHT = 1.7;
 
 // Parameters controlling the position of fingers
 
 var PINKIE_X = -1.55;
 var RING_X = -0.55;
 var MIDDLE_X = 0.55;
+var INDEX_X = 1.55;
 
 // Shader transformation matrices
 
@@ -63,6 +65,8 @@ var LowerRing = 4;
 var UpperRing = 5;
 var LowerMiddle = 6;
 var UpperMiddle = 7;
+var LowerIndex = 8;
+var UpperIndex = 9;
 
 var lightPosition = vec4(0.0, 0.0, 1.0, 0.0 );
 var lightAmbient = vec4(0.2, 0.2, 0.2, 1.0 );
@@ -76,7 +80,7 @@ var materialShininess = 100.0;
 
 var ambientColor, diffuseColor, specularColor;
 
-var theta= [ 0, 0, 0, 0, 0, 0, 0, 0];
+var theta= [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 var modelViewMatrixLoc;
 
@@ -220,6 +224,12 @@ window.onload = function init() {
     document.getElementById("UpperMiddleSlider").onchange = function(event) {
         theta[UpperMiddle] =  event.target.value;
     };
+    document.getElementById("LowerIndexSlider").onchange = function(event) {
+        theta[LowerIndex] = event.target.value;
+    };
+    document.getElementById("UpperIndexSlider").onchange = function(event) {
+        theta[UpperIndex] =  event.target.value;
+    };
 
     render();
 }
@@ -283,6 +293,23 @@ function upperMiddle() {
     gl.drawArrays( gl.TRIANGLES, 0, NumVertices );
 }
 
+function lowerIndex()
+{
+    var s = scale4(LOWER_FINGER_WIDTH, LOWER_FINGER_HEIGHT, HAND_DEPTH);
+    var instanceMatrix = mult( translate( INDEX_X, 0.5 * LOWER_FINGER_HEIGHT, 0.0 ), s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv( modelViewMatrixLoc,  false, flatten(t) );
+    gl.drawArrays( gl.TRIANGLES, 0, NumVertices );
+}
+
+function upperIndex() {
+    var s = scale4(UPPER_FINGER_WIDTH, MIDDLE_HEIGHT, HAND_DEPTH);
+    var instanceMatrix = mult(translate( INDEX_X, 0.5 * INDEX_HEIGHT, 0.0 ),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv( modelViewMatrixLoc,  false, flatten(t) );
+    gl.drawArrays( gl.TRIANGLES, 0, NumVertices );
+}
+
 
 var render = function() {
 
@@ -322,6 +349,16 @@ var render = function() {
     modelViewMatrix  = mult(modelViewMatrix, translate(0.0, LOWER_FINGER_HEIGHT, 0.0));
     modelViewMatrix  = mult(modelViewMatrix, rotate(theta[UpperMiddle], 1, 0, 0) );
     upperMiddle();
+
+    modelViewMatrix = temp;
+
+    modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta[LowerIndex], 1, 0, 0 ));
+    lowerIndex();
+
+    modelViewMatrix  = mult(modelViewMatrix, translate(0.0, LOWER_FINGER_HEIGHT, 0.0));
+    modelViewMatrix  = mult(modelViewMatrix, rotate(theta[UpperIndex], 1, 0, 0) );
+    upperIndex();
 
     requestAnimFrame(render);
 }
