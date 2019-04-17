@@ -93,6 +93,16 @@ var modelViewMatrixLoc;
 
 var vBuffer, cBuffer;
 
+var animation = false;
+
+var state = 1;
+
+var RIGHT_LEFT = 1;
+var directionRL = -1;
+var countRL = 0;
+
+var FIST = 2;
+
 //----------------------------------------------------------------------------
 
 function quad(  a,  b,  c,  d ) {
@@ -243,6 +253,13 @@ window.onload = function init() {
     document.getElementById("UpperThumbSlider").onchange = function(event) {
         theta[UpperThumb] =  event.target.value;
     };
+    document.addEventListener("keydown", function(event) {
+        switch (event.keyCode) {
+            case 80: // p
+                animation = !animation;
+                break;
+        }
+    });
 
     render();
 }
@@ -339,10 +356,44 @@ function upperThumb() {
     gl.drawArrays( gl.TRIANGLES, 0, NumVertices );
 }
 
+function updateAnimation() {
+    switch (state) {
+        case RIGHT_LEFT:
+        if (theta[PalmZ] == 0) {
+            countRL++;
+
+            if (countRL == 3) {
+                state = FIST;
+                countRL = 0;
+                break;
+            }
+        }
+        
+        theta[PalmZ] += directionRL;
+        
+        if (Math.abs(theta[PalmZ]) == 45) {
+            directionRL = -directionRL;
+        }
+        break;
+
+        case FIST:
+        console.log("asd")
+        break;
+
+        default:
+
+        break;
+    } 
+}
+
 
 var render = function() {
 
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
+
+    if (animation) {
+        updateAnimation();
+    }
 
     var temp;
 
