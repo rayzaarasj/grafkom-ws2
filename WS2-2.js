@@ -11,15 +11,17 @@ var instanceMatrix;
 
 var modelViewMatrixLoc;
 
-var lightPosition = vec4(1.0, 1.0, 1.0, 0.0 );
-var lightAmbient = vec4(0.2, 0.2, 0.2, 1.0 );
+var lightPosition = vec4(0, -2, 3.0, 0.0 );
+var lightAmbient = vec4(0.5, 0.5, 0.5, 1.0 );
 var lightDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
 var lightSpecular = vec4( 1.0, 1.0, 1.0, 1.0 );
 
-var materialAmbient = vec4( 1.0, 0.0, 1.0, 1.0 );
-var materialDiffuse = vec4( 1.0, 0.8, 0.0, 1.0);
-var materialSpecular = vec4( 1.0, 0.8, 0.0, 1.0 );
-var materialShininess = 100.0;
+var materialAmbient = vec4( 0.19225, 0.19225, 0.19225, 1.0 );
+var materialDiffuse = vec4( 0.50754, 0.50754, 0.50754, 1.0 );
+var materialSpecular = vec4( 0.508273, 0.508273, 0.508273, 1.0 );
+var materialShininess = 51.2;
+
+var flag = 0;
 
 var ambientColor, diffuseColor, specularColor;
 
@@ -60,11 +62,13 @@ var headDepth = 1.5;
 
 var upperArmHeight = 2.4;
 var upperArmWidth  = 0.7;
+
 var lowerArmHeight = 2.6;
 var lowerArmWidth  = 0.7;
 
 var upperLegHeight = 2.2;
 var upperLegWidth  = 0.9;
+
 var lowerLegHeight = 2.8;
 var lowerLegWidth  = 0.9;
 
@@ -120,8 +124,8 @@ function initNodes(Id) {
 
     case torsoId:
 
-    m = rotate(theta[torsoId], 0, 1, 0 );
-    // m = rotate(90 - theta[torsoId], 0, 1, 0 );
+    // m = rotate(theta[torsoId], 0, 1, 0 );
+    m = rotate(90 - theta[torsoId], 0, 1, 0 );
     figure[torsoId] = createNode( m, torso, null, headId );
     break;
 
@@ -131,7 +135,7 @@ function initNodes(Id) {
 
 
     m = translate(0.0, torsoHeight+0.5*headHeight, 0.0);
-	m = mult(m, rotate(theta[head1Id], 1, 0, 0))
+	m = mult(m, rotate(-theta[head1Id], 1, 0, 0))
 	m = mult(m, rotate(theta[head2Id], 0, 1, 0));
     m = mult(m, translate(0.0, -0.5*headHeight, 0.0));
     figure[headId] = createNode( m, head, leftUpperArmId, null);
@@ -141,56 +145,88 @@ function initNodes(Id) {
     case leftUpperArmId:
 
     m = translate(-(0.5*torsoWidth + upperArmWidth), 0.9*torsoHeight, 0.0);
-	m = mult(m, rotate(180 - theta[leftUpperArmId], 1, 0, 0));
+    if (flag) {
+        m = mult(m, rotate(180 - 15*Math.sin(angle), 1, 0, 0));
+    } else {
+	    m = mult(m, rotate(180 - theta[leftUpperArmId], 1, 0, 0));
+    }
     figure[leftUpperArmId] = createNode( m, leftUpperArm, rightUpperArmId, leftLowerArmId );
     break;
 
     case rightUpperArmId:
 
     m = translate(0.5*torsoWidth + upperArmWidth, 0.9*torsoHeight, 0.0);
-	m = mult(m, rotate(180 - theta[rightUpperArmId], 1, 0, 0));
+    if (flag) {
+        m = mult(m, rotate(180 + 15*Math.sin(angle), 1, 0, 0));
+    } else {
+	    m = mult(m, rotate(180 - theta[rightUpperArmId], 1, 0, 0));
+    }
     figure[rightUpperArmId] = createNode( m, rightUpperArm, leftUpperLegId, rightLowerArmId );
     break;
 
     case leftUpperLegId:
 
     m = translate(-(0.3*torsoWidth), 0.1*upperLegHeight, 0.0);
-	m = mult(m , rotate(180 - theta[leftUpperLegId], 1, 0, 0));
+    if (flag) {
+        m = mult(m, rotate(180 + 10*Math.sin(angle), 1, 0, 0));
+    } else {
+	    m = mult(m, rotate(180 - theta[leftUpperLegId], 1, 0, 0));
+    }
     figure[leftUpperLegId] = createNode( m, leftUpperLeg, rightUpperLegId, leftLowerLegId );
     break;
 
     case rightUpperLegId:
 
     m = translate(0.3*torsoWidth, 0.1*upperLegHeight, 0.0);
-	m = mult(m, rotate(180 - theta[rightUpperLegId], 1, 0, 0));
+    if (flag) {
+        m = mult(m, rotate(180 - 10*Math.sin(angle), 1, 0, 0));
+    } else {
+	    m = mult(m, rotate(180 - theta[rightUpperLegId], 1, 0, 0));
+    }
     figure[rightUpperLegId] = createNode( m, rightUpperLeg, null, rightLowerLegId );
     break;
 
     case leftLowerArmId:
 
     m = translate(0.0, upperArmHeight, 0.0);
-    m = mult(m, rotate(-theta[leftLowerArmId], 1, 0, 0));
+    if (flag) {
+        m = mult(m, rotate(-Math.abs(10*Math.sin(angle)), 1, 0, 0));
+    } else {
+	    m = mult(m, rotate(-theta[leftLowerArmId], 1, 0, 0));
+    }
     figure[leftLowerArmId] = createNode( m, leftLowerArm, null, null );
     break;
 
     case rightLowerArmId:
 
     m = translate(0.0, upperArmHeight, 0.0);
-    m = mult(m, rotate(-theta[rightLowerArmId], 1, 0, 0));
+    if (flag) {
+        m = mult(m, rotate(-Math.abs(10*Math.sin(angle)), 1, 0, 0));
+    } else {
+	    m = mult(m, rotate(-theta[rightLowerArmId], 1, 0, 0));
+    }
     figure[rightLowerArmId] = createNode( m, rightLowerArm, null, null );
     break;
 
     case leftLowerLegId:
 
     m = translate(0.0, upperLegHeight, 0.0);
-    m = mult(m, rotate(theta[leftLowerLegId], 1, 0, 0));
+    if (flag) {
+        m = mult(m, rotate(Math.abs(10 + 20*Math.sin(angle)), 1, 0, 0));
+    } else {
+	    m = mult(m, rotate(theta[leftLowerLegId], 1, 0, 0));
+    }
     figure[leftLowerLegId] = createNode( m, leftLowerLeg, null, null );
     break;
 
     case rightLowerLegId:
 
     m = translate(0.0, upperLegHeight, 0.0);
-    m = mult(m, rotate(theta[rightLowerLegId], 1, 0, 0));
+    if (flag) {
+        m = mult(m, rotate(Math.abs(10 - 20*Math.sin(angle)), 1, 0, 0));
+    } else {
+	    m = mult(m, rotate(theta[rightLowerLegId], 1, 0, 0));
+    }
     figure[rightLowerLegId] = createNode( m, rightLowerLeg, null, null );
     break;
 
@@ -370,58 +406,62 @@ window.onload = function init() {
     var specularProduct = mult(lightSpecular, materialSpecular);
 
     document.getElementById("slider0").onchange = function(event) {
-        theta[torsoId ] = event.target.value;
+        theta[torsoId ] = parseInt(event.target.value);
         initNodes(torsoId);
     };
 
     document.getElementById("slider1").onchange = function(event) {
-        theta[head1Id] = event.target.value;
+        theta[head1Id] = parseInt(event.target.value);
         initNodes(head1Id);
     };
 
     document.getElementById("slider2").onchange = function(event) {
-         theta[leftUpperArmId] = event.target.value;
+         theta[leftUpperArmId] = parseInt(event.target.value);
          initNodes(leftUpperArmId);
     };
 
     document.getElementById("slider3").onchange = function(event) {
-         theta[leftLowerArmId] =  event.target.value;
+         theta[leftLowerArmId] =  parseInt(event.target.value);
          initNodes(leftLowerArmId);
     };
 
     document.getElementById("slider4").onchange = function(event) {
-        theta[rightUpperArmId] = event.target.value;
+        theta[rightUpperArmId] = parseInt(event.target.value);
         initNodes(rightUpperArmId);
     };
 
     document.getElementById("slider5").onchange = function(event) {
-         theta[rightLowerArmId] =  event.target.value;
+         theta[rightLowerArmId] =  parseInt(event.target.value);
          initNodes(rightLowerArmId);
     };
 
     document.getElementById("slider6").onchange = function(event) {
-        theta[leftUpperLegId] = event.target.value;
+        theta[leftUpperLegId] = parseInt(event.target.value);
         initNodes(leftUpperLegId);
     };
 
     document.getElementById("slider7").onchange = function(event) {
-         theta[leftLowerLegId] = event.target.value;
+         theta[leftLowerLegId] = parseInt(event.target.value);
          initNodes(leftLowerLegId);
     };
 
     document.getElementById("slider8").onchange = function(event) {
-         theta[rightUpperLegId] = event.target.value;
+         theta[rightUpperLegId] = parseInt(event.target.value);
          initNodes(rightUpperLegId);
     };
 
     document.getElementById("slider9").onchange = function(event) {
-        theta[rightLowerLegId] = event.target.value;
+        theta[rightLowerLegId] = parseInt(event.target.value);
         initNodes(rightLowerLegId);
     };
 
     document.getElementById("slider10").onchange = function(event) {
-         theta[head2Id] = event.target.value;
+         theta[head2Id] = parseInt(event.target.value);
          initNodes(head2Id);
+    };
+
+    document.getElementById( "animateButton" ).onclick = function () {
+        flag = !flag;
     };
 
     for(i=0; i<numNodes; i++) initNodes(i);
@@ -447,6 +487,9 @@ var render = function() {
         gl.clear( gl.COLOR_BUFFER_BIT );
         traverse(torsoId);
         requestAnimFrame(render);
-        angle += 0.01;
+        if (flag){
+            for(i=0; i<numNodes; i++) initNodes(i);
+            angle += 0.01;
+        }
         initNodes(rightUpperLegId);
         initNodes(leftUpperLegId);}
