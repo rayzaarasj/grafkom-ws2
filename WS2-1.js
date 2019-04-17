@@ -93,6 +93,21 @@ var modelViewMatrixLoc;
 
 var vBuffer, cBuffer;
 
+var animation = false;
+
+var state = 1;
+
+var RIGHT_LEFT = 1;
+var directionRL = -1;
+var countRL = 0;
+
+var FIST = 2;
+var directionFist = 1;
+var countFist = 0;
+
+var thetaNonAnimation = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var thetaAnimation = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
 //----------------------------------------------------------------------------
 
 function quad(  a,  b,  c,  d ) {
@@ -243,6 +258,20 @@ window.onload = function init() {
     document.getElementById("UpperThumbSlider").onchange = function(event) {
         theta[UpperThumb] =  event.target.value;
     };
+    document.addEventListener("keydown", function(event) {
+        switch (event.keyCode) {
+            case 80: // p
+                if (animation) {
+                    thetaAnimation = theta.slice();
+                    theta = thetaNonAnimation.slice();
+                } else {
+                    thetaNonAnimation = theta.slice();
+                    theta = thetaAnimation.slice();
+                }
+                animation = !animation;
+                break;
+        }
+    });
 
     render();
 }
@@ -339,10 +368,75 @@ function upperThumb() {
     gl.drawArrays( gl.TRIANGLES, 0, NumVertices );
 }
 
+function updateThetaFist(delta) {
+    theta[LowerPinkie] += delta;
+    theta[UpperPinkie] += delta;
+
+    theta[LowerRing] += delta;
+    theta[UpperRing] += delta;
+
+    theta[LowerMiddle] += delta;
+    theta[UpperMiddle] += delta;
+
+    theta[LowerIndex] += delta;
+    theta[UpperIndex] += delta;
+
+    theta[LowerThumb] += delta;
+    theta[UpperThumb] += delta;
+}
+
+function updateAnimation() {
+    switch (state) {
+        case RIGHT_LEFT:
+        if (theta[PalmZ] == 0) {
+            countRL++;
+
+            if (countRL == 3) {
+                state = FIST;
+                countRL = 0;
+                break;
+            }
+        }
+        
+        theta[PalmZ] += directionRL;
+        
+        if (Math.abs(theta[PalmZ]) == 45) {
+            directionRL = -directionRL;
+        }
+        break;
+
+        case FIST:
+        if (theta[LowerPinkie] == 0) {
+            countFist++;
+
+            if (countFist == 3) {
+                state = RIGHT_LEFT;
+                countFist = 0;
+                break;
+            }
+        }
+
+        updateThetaFist(directionFist);
+
+        if (theta[LowerPinkie] == 90 || theta[LowerPinkie] == 0) {
+            directionFist = -directionFist;
+        }
+        break;
+
+        default:
+
+        break;
+    } 
+}
+
 
 var render = function() {
 
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
+
+    if (animation) {
+        updateAnimation();
+    }
 
     var temp;
 
