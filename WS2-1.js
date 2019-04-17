@@ -43,6 +43,8 @@ var PINKIE_HEIGHT = 1.5;
 var RING_HEIGHT = 1.7;
 var MIDDLE_HEIGHT = 1.9;
 var INDEX_HEIGHT = 1.7;
+var THUMB_HEIGHT = 0.7;
+var THUMB_WIDTH = 1.7;
 
 // Parameters controlling the position of fingers
 
@@ -50,6 +52,8 @@ var PINKIE_X = -1.55;
 var RING_X = -0.55;
 var MIDDLE_X = 0.55;
 var INDEX_X = 1.55;
+var THUMB_X = 0.7;
+var THUMB_Y = 1.0;
 
 // Shader transformation matrices
 
@@ -67,6 +71,7 @@ var LowerMiddle = 6;
 var UpperMiddle = 7;
 var LowerIndex = 8;
 var UpperIndex = 9;
+var Thumb = 10;
 
 var lightPosition = vec4(0.0, 0.0, 1.0, 0.0 );
 var lightAmbient = vec4(0.2, 0.2, 0.2, 1.0 );
@@ -80,7 +85,7 @@ var materialShininess = 100.0;
 
 var ambientColor, diffuseColor, specularColor;
 
-var theta= [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var theta= [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 var modelViewMatrixLoc;
 
@@ -230,6 +235,9 @@ window.onload = function init() {
     document.getElementById("UpperIndexSlider").onchange = function(event) {
         theta[UpperIndex] =  event.target.value;
     };
+    document.getElementById("ThumbSlider").onchange = function(event) {
+        theta[Thumb] =  event.target.value;
+    };
 
     render();
 }
@@ -310,6 +318,14 @@ function upperIndex() {
     gl.drawArrays( gl.TRIANGLES, 0, NumVertices );
 }
 
+function thumb() {
+    var s = scale4(THUMB_WIDTH, THUMB_HEIGHT, HAND_DEPTH);
+    var instanceMatrix = mult(translate( THUMB_X, THUMB_Y, 0.0 ),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv( modelViewMatrixLoc,  false, flatten(t) );
+    gl.drawArrays( gl.TRIANGLES, 0, NumVertices );
+}
+
 
 var render = function() {
 
@@ -359,6 +375,11 @@ var render = function() {
     modelViewMatrix  = mult(modelViewMatrix, translate(0.0, LOWER_FINGER_HEIGHT, 0.0));
     modelViewMatrix  = mult(modelViewMatrix, rotate(theta[UpperIndex], 1, 0, 0) );
     upperIndex();
+
+    modelViewMatrix = temp;
+    modelViewMatrix  = mult(modelViewMatrix, translate(0.5 * PALM_WIDTH, 0.0, 0.0));
+    modelViewMatrix  = mult(modelViewMatrix, rotate(-theta[Thumb], 0, 1, 0) );
+    thumb();
 
     requestAnimFrame(render);
 }
