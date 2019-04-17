@@ -22,6 +22,7 @@ var materialSpecular = vec4( 0.508273, 0.508273, 0.508273, 1.0 );
 var materialShininess = 51.2;
 
 var flag = 0;
+var torsoFlag = 0;
 
 var ambientColor, diffuseColor, specularColor;
 
@@ -41,7 +42,6 @@ var vertices = [
 var torsoId = 0;
 var headId  = 1;
 var head1Id = 1;
-var head2Id = 10;
 var leftUpperArmId = 2;
 var leftLowerArmId = 3;
 var rightUpperArmId = 4;
@@ -50,6 +50,7 @@ var leftUpperLegId = 6;
 var leftLowerLegId = 7;
 var rightUpperLegId = 8;
 var rightLowerLegId = 9;
+var head2Id = 10;
 
 
 var torsoHeight = 5.0;
@@ -74,7 +75,9 @@ var lowerLegWidth  = 0.9;
 
 var numNodes = 10;
 var numAngles = 11;
+
 var angle = 0;
+var torsoAngle = 0;
 
 var theta = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
@@ -124,8 +127,8 @@ function initNodes(Id) {
 
     case torsoId:
 
-    // m = rotate(theta[torsoId], 0, 1, 0 );
-    m = rotate(90 - theta[torsoId], 0, 1, 0 );
+    m = rotate(theta[torsoId] + torsoAngle, 0, 1, 0 );
+    // m = rotate(90 - theta[torsoId], 0, 1, 0 );
     figure[torsoId] = createNode( m, torso, null, headId );
     break;
 
@@ -462,6 +465,13 @@ window.onload = function init() {
 
     document.getElementById( "animateButton" ).onclick = function () {
         flag = !flag;
+        for(i=0; i<numNodes; i++) initNodes(i);
+        angle = 0;
+    };
+
+    document.getElementById( "rotateButton" ).onclick = function () {
+        torsoFlag = !torsoFlag;
+        for(i=0; i<numNodes; i++) initNodes(i);
     };
 
     for(i=0; i<numNodes; i++) initNodes(i);
@@ -488,8 +498,16 @@ var render = function() {
         traverse(torsoId);
         requestAnimFrame(render);
         if (flag){
+            angle += 0.02;
+        }
+        if (torsoFlag){
+            torsoAngle += 0.3;
+            if (torsoAngle == 2*Math.PI) {
+                torsoAngle = 0
+            }
+        }
+        if (flag || torsoFlag){
             for(i=0; i<numNodes; i++) initNodes(i);
-            angle += 0.01;
         }
         initNodes(rightUpperLegId);
         initNodes(leftUpperLegId);}
