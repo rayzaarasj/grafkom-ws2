@@ -248,14 +248,31 @@ window.onload = function init() {
         if (animation) {
             thetaAnimation = theta.slice();
             theta = thetaNonAnimation.slice();
+            toggleSlider(false);
         } else {
             thetaNonAnimation = theta.slice();
             theta = thetaAnimation.slice();
+            toggleSlider(true);
         }
         animation = !animation;
     };
 
     render();
+}
+
+function toggleSlider(state) {
+    document.getElementById("PalmYSlider").disabled = state;
+    document.getElementById("PalmZSlider").disabled = state;
+    document.getElementById("LowerPinkieSlider").disabled = state;
+    document.getElementById("UpperPinkieSlider").disabled = state;
+    document.getElementById("LowerRingSlider").disabled = state;
+    document.getElementById("UpperRingSlider").disabled = state;
+    document.getElementById("LowerMiddleSlider").disabled = state;
+    document.getElementById("UpperMiddleSlider").disabled = state;
+    document.getElementById("LowerIndexSlider").disabled = state;
+    document.getElementById("UpperIndexSlider").disabled = state;
+    document.getElementById("LowerThumbSlider").disabled = state;
+    document.getElementById("UpperThumbSlider").disabled = state;
 }
 
 function palm() {
