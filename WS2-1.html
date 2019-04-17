@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <script id="vertex-shader" type="x-shader/x-vertex">
 attribute  vec4 vPosition;
 attribute  vec3 vNormal;
@@ -11,36 +10,34 @@ uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 uniform vec4 lightPosition;
 uniform float shininess;
-void main()
-{
+void main() {
     vec3 pos = -(modelViewMatrix * vPosition).xyz;
     
     //fixed light postion
     
     vec3 light = lightPosition.xyz;
-    vec3 L = normalize( light - pos );
-
+    vec3 L = normalize(light - pos);
 	
-    vec3 E = normalize( -pos );
-    vec3 H = normalize( L + E );
+    vec3 E = normalize(-pos);
+    vec3 H = normalize(L + E);
     
     vec4 NN = vec4(vNormal,0);
 
     // Transform vertex normal into eye coordinates
        
-    vec3 N = normalize( (modelViewMatrix*NN).xyz);
+    vec3 N = normalize((modelViewMatrix*NN).xyz);
 
     // Compute terms in the illumination equation
     vec4 ambient = ambientProduct;
 
-    float Kd = max( dot(L, N), 0.0 );
+    float Kd = max(dot(L, N), 0.0);
     vec4  diffuse = Kd*diffuseProduct;
 
-    float Ks = pow( max(dot(N, H), 0.0), shininess );
+    float Ks = pow(max(dot(N, H), 0.0), shininess);
     vec4  specular = Ks * specularProduct;
     
-    if( dot(L, N) < 0.0 ) {
-	specular = vec4(0.0, 0.0, 0.0, 1.0);
+    if(dot(L, N) < 0.0) {
+	    specular = vec4(0.0, 0.0, 0.0, 1.0);
     } 
 
     gl_Position = projectionMatrix * modelViewMatrix * vPosition;
@@ -51,13 +48,9 @@ void main()
 </script>
 
 <script id="fragment-shader" type="x-shader/x-fragment">
-
 precision mediump float;
-
 varying  vec4 fColor;
-
-void main()
-{
+void main() {
     gl_FragColor = fColor;
 }
 </script>
@@ -68,93 +61,93 @@ void main()
 <script type="text/javascript" src="WS2-1.js"></script>
 
 <div>
-Palm Y Angle -180 <input id="PalmYSlider" type="range"
- min="-180" max="180" step="10" value="0"
-  />
- 180
-</div><br/>
+    Palm Y Angle -180 <input id="PalmYSlider" type="range" min="-180" max="180" step="10" value="0"/>
+    180
+</div>
+
+<br/>
 
 <div>
-Palm Z Angle -45 <input id="PalmZSlider" type="range"
-    min="-45" max="45" step="5" value="0"
-    />
+    Palm Z Angle -45 <input id="PalmZSlider" type="range" min="-45" max="45" step="5" value="0"/>
     45
-</div><br/>
+</div>
+
+<br/>
 
 <div>
-Lower Pinkie Angle 0 <input id="LowerPinkieSlider" type="range"
- min="0" max="90" step="10" value="0"
-  />
- 90
-</div><br/>
-
-<div>
-Upper Pinkie Angle 0 <input id="UpperPinkieSlider" type="range"
- min="0" max="90" step="10" value="0"
-  />
- 90
-</div><br/>
-
-<div>
-Lower Ring Angle 0 <input id="LowerRingSlider" type="range"
-    min="0" max="90" step="10" value="0"
-    />
+    Lower Pinkie Angle 0 <input id="LowerPinkieSlider" type="range" min="0" max="90" step="10" value="0"/>
     90
-</div><br/>
+</div>
+
+<br/>
 
 <div>
-Upper Ring Angle 0 <input id="UpperRingSlider" type="range"
-    min="0" max="90" step="10" value="0"
-    />
+    Upper Pinkie Angle 0 <input id="UpperPinkieSlider" type="range" min="0" max="90" step="10" value="0"/>
     90
-</div><br/>
+</div>
+
+<br/>
 
 <div>
-Lower Middle Angle 0 <input id="LowerMiddleSlider" type="range"
-    min="0" max="90" step="10" value="0"
-    />
+    Lower Ring Angle 0 <input id="LowerRingSlider" type="range" min="0" max="90" step="10" value="0"/>
     90
-</div><br/>
+</div>
+
+<br/>
 
 <div>
-Upper Middle Angle 0 <input id="UpperMiddleSlider" type="range"
-    min="0" max="90" step="10" value="0"
-    />
+    Upper Ring Angle 0 <input id="UpperRingSlider" type="range" min="0" max="90" step="10" value="0"/>
     90
-</div><br/>
+</div>
+
+<br/>
 
 <div>
-    Lower Index Angle 0 <input id="LowerIndexSlider" type="range"
-        min="0" max="90" step="10" value="0"
-        />
-        90
-    </div><br/>
+    Lower Middle Angle 0 <input id="LowerMiddleSlider" type="range" min="0" max="90" step="10" value="0"/>
+    90
+</div>
+
+<br/>
+
+<div>
+    Upper Middle Angle 0 <input id="UpperMiddleSlider" type="range" min="0" max="90" step="10" value="0"/>
+    90
+</div>
+
+<br/>
+
+<div>
+    Lower Index Angle 0 <input id="LowerIndexSlider" type="range" min="0" max="90" step="10" value="0"/>
+    90
+</div>
+
+<br/>
+
+<div>
+    Upper Index Angle 0 <input id="UpperIndexSlider" type="range" min="0" max="90" step="10" value="0"/>
+    90
+</div>
     
-    <div>
-    Upper Index Angle 0 <input id="UpperIndexSlider" type="range"
-        min="0" max="90" step="10" value="0"
-        />
-        90
-    </div><br/>
+<br/>
 
-    <div>
-        Lower Thumb Angle 0 <input id="LowerThumbSlider" type="range"
-            min="0" max="90" step="10" value="0"
-            />
-            90
-        </div><br/>
+<div>
+    Lower Thumb Angle 0 <input id="LowerThumbSlider" type="range" min="0" max="90" step="10" value="0"/>
+    90
+</div>
 
-        <div>
-            Upper Thumb Angle 0 <input id="UpperThumbSlider" type="range"
-                min="0" max="90" step="10" value="0"
-                />
-                90
-            </div><br/>
+<br/>
+
+<div>
+    Upper Thumb Angle 0 <input id="UpperThumbSlider" type="range" min="0" max="90" step="10" value="0"/>
+    90
+</div>
+
+<br/>
     
 
 <body>
-<canvas id="gl-canvas" width="512" height="512">
-Oops ... your browser doesn't support the HTML5 canvas element
-</canvas>
+    <canvas id="gl-canvas" width="512" height="512">
+        Oops ... your browser doesn't support the HTML5 canvas element
+    </canvas>
 </body>
 </html>
