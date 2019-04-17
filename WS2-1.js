@@ -149,7 +149,7 @@ window.onload = function init() {
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
 
-    //  Load shaders and initialize attribute buffers
+    // Load shaders and initialize attribute buffers
 
     program = initShaders(gl, "vertex-shader", "fragment-shader");
 
@@ -199,42 +199,54 @@ window.onload = function init() {
     document.getElementById("PalmYSlider").onchange = function(event) {
         theta[PalmY] = event.target.value;
     };
+    
     document.getElementById("PalmZSlider").onchange = function(event) {
         theta[PalmZ] = event.target.value;
     };
+    
     document.getElementById("LowerPinkieSlider").onchange = function(event) {
         theta[LowerPinkie] = event.target.value;
     };
+    
     document.getElementById("UpperPinkieSlider").onchange = function(event) {
         theta[UpperPinkie] =  event.target.value;
     };
+    
     document.getElementById("LowerRingSlider").onchange = function(event) {
         theta[LowerRing] = event.target.value;
     };
+    
     document.getElementById("UpperRingSlider").onchange = function(event) {
         theta[UpperRing] =  event.target.value;
     };
+    
     document.getElementById("LowerMiddleSlider").onchange = function(event) {
         theta[LowerMiddle] = event.target.value;
     };
+    
     document.getElementById("UpperMiddleSlider").onchange = function(event) {
         theta[UpperMiddle] =  event.target.value;
     };
+    
     document.getElementById("LowerIndexSlider").onchange = function(event) {
         theta[LowerIndex] = event.target.value;
     };
+    
     document.getElementById("UpperIndexSlider").onchange = function(event) {
         theta[UpperIndex] =  event.target.value;
     };
+    
     document.getElementById("LowerThumbSlider").onchange = function(event) {
         theta[LowerThumb] =  event.target.value;
     };
+    
     document.getElementById("UpperThumbSlider").onchange = function(event) {
         theta[UpperThumb] =  event.target.value;
     };
+    
     document.addEventListener("keydown", function(event) {
         switch (event.keyCode) {
-            case 80: // p
+            case 80: // p, to change state between animation and not
                 if (animation) {
                     thetaAnimation = theta.slice();
                     theta = thetaNonAnimation.slice();
@@ -410,11 +422,13 @@ var render = function() {
 
     var temp;
 
+    // Palm
     modelViewMatrix = rotate(theta[PalmY], 0, 1, 0);
     modelViewMatrix = mult(modelViewMatrix, rotate(theta[PalmZ], 0, 0, 1));
     temp = modelViewMatrix;
     palm();
 
+    // Index Finger
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
     modelViewMatrix = mult(modelViewMatrix, rotate(theta[LowerPinkie], 1, 0, 0));
     lowerPinkie();
@@ -423,6 +437,7 @@ var render = function() {
     modelViewMatrix  = mult(modelViewMatrix, rotate(theta[UpperPinkie], 1, 0, 0));
     upperPinkie();
 
+    // Ring Finger
     modelViewMatrix = temp;
 
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
@@ -433,6 +448,7 @@ var render = function() {
     modelViewMatrix  = mult(modelViewMatrix, rotate(theta[UpperRing], 1, 0, 0));
     upperRing();
 
+    // Middle Finger
     modelViewMatrix = temp;
 
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
@@ -443,6 +459,7 @@ var render = function() {
     modelViewMatrix  = mult(modelViewMatrix, rotate(theta[UpperMiddle], 1, 0, 0));
     upperMiddle();
 
+    // Index Finger
     modelViewMatrix = temp;
 
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
@@ -453,6 +470,7 @@ var render = function() {
     modelViewMatrix  = mult(modelViewMatrix, rotate(theta[UpperIndex], 1, 0, 0));
     upperIndex();
 
+    // Thumb
     modelViewMatrix = temp;
 
     modelViewMatrix  = mult(modelViewMatrix, translate(0.5 * PALM_WIDTH, 0.0, 0.0));
