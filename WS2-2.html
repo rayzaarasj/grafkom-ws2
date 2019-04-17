@@ -4,13 +4,51 @@
 <script id="vertex-shader" type="x-shader/x-vertex">
 
 attribute  vec4 vPosition;
+attribute  vec3 vNormal;
+varying vec4 fColor;
 
+uniform vec4 ambientProduct, diffuseProduct, specularProduct;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
+uniform vec4 lightPosition;
+uniform float shininess;
 
 void main()
 {
+    vec3 pos = -(modelViewMatrix * vPosition).xyz;
+
+    //fixed light postion
+
+    vec3 light = lightPosition.xyz;
+    vec3 L = normalize( light - pos );
+
+
+    vec3 E = normalize( -pos );
+    vec3 H = normalize( L + E );
+
+    vec4 NN = vec4(vNormal,0);
+
+    // Transform vertex normal into eye coordinates
+
+    vec3 N = normalize( (modelViewMatrix*NN).xyz);
+
+    // Compute terms in the illumination equation
+    vec4 ambient = ambientProduct;
+
+    float Kd = max( dot(L, N), 0.0 );
+    vec4  diffuse = Kd*diffuseProduct;
+
+    float Ks = pow( max(dot(N, H), 0.0), shininess );
+    vec4  specular = Ks * specularProduct;
+
+    if( dot(L, N) < 0.0 ) {
+	specular = vec4(0.0, 0.0, 0.0, 1.0);
+    }
     gl_Position = projectionMatrix * modelViewMatrix * vPosition;
+
+    fColor = ambient + diffuse +specular;
+
+    fColor.a = 1.0;
 }
 </script>
 
@@ -18,10 +56,11 @@ void main()
 
 precision mediump float;
 
+varying vec4 fColor;
+
 void main()
 {
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-
+    gl_FragColor = fColor;
 }
 </script>
 
@@ -59,8 +98,8 @@ left upper arm angle -180 <input id="slider2" type="range"
  180
 </div><br/>
 <div>
-left lower arm angle -180 <input id="slider3" type="range"
- min="-180" max="180" step="10" value="0"
+left lower arm angle 0 <input id="slider3" type="range"
+ min="0" max="180" step="10" value="0"
   />
  180
 </div><br/>
@@ -71,8 +110,8 @@ right upper arm angle -180 <input id="slider4" type="range"
  180
 </div><br/>
 <div>
-right lower arm angle -180 <input id="slider5" type="range"
- min="-180" max="180" step="10" value="0"
+right lower arm angle 0 <input id="slider5" type="range"
+ min="0" max="180" step="10" value="0"
   />
  180
 </div><br/>
@@ -83,10 +122,10 @@ left upper leg angle -90 <input id="slider6" type="range"
  90
 </div><br/>
 <div>
-left lower leg angle -180 <input id="slider7" type="range"
- min="-180" max="180" step="10" value="0"
+left lower leg angle 0 <input id="slider7" type="range"
+ min="0" max="90" step="10" value="0"
   />
- 180
+ 90
 </div><br/>
 <div>
 right upper leg angle -90 <input id="slider8" type="range"
@@ -96,10 +135,10 @@ right upper leg angle -90 <input id="slider8" type="range"
 </div><br/>
 
 <div>
-right lower leg angle -180 <input id="slider9" type="range"
- min="-180" max="180" step="10" value="0"
+right lower leg angle 0 <input id="slider9" type="range"
+ min="0" max="90" step="10" value="0"
   />
- 180
+ 90
 </div><br/>
 
 
