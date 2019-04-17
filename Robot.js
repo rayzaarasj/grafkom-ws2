@@ -38,7 +38,7 @@ var vertices = [
     vec4( 0.5, -0.5, -0.5, 1.0 )
 ];
 
-
+// Identifier of each object parts
 var torsoId = 0;
 var headId  = 1;
 var head1Id = 1;
@@ -52,7 +52,10 @@ var rightUpperLegId = 8;
 var rightLowerLegId = 9;
 var head2Id = 10;
 
+// angle of each rotation, the order is according to the identifier above
+var theta = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
+// The size of object parts
 var torsoHeight = 5.0;
 var torsoWidth = 3.0;
 var torsoDepth = 1.0;
@@ -76,10 +79,12 @@ var lowerLegWidth  = 0.9;
 var numNodes = 10;
 var numAngles = 11;
 
+// angle that is used for animation
 var angle = 0;
+
+// angle that is used to rotate the whole object
 var torsoAngle = 0;
 
-var theta = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 var numVertices = 24;
 
@@ -118,7 +123,7 @@ function createNode(transform, render, sibling, child){
     return node;
 }
 
-
+// function to control the transformation matrix for each object parts
 function initNodes(Id) {
 
     var m = mat4();
@@ -126,115 +131,100 @@ function initNodes(Id) {
     switch(Id) {
 
     case torsoId:
-
-    m = rotate(theta[torsoId] + torsoAngle, 0, 1, 0 );
-    // m = rotate(90 - theta[torsoId], 0, 1, 0 );
-    figure[torsoId] = createNode( m, torso, null, headId );
+        m = rotate(theta[torsoId] + torsoAngle, 0, 1, 0 );
+        figure[torsoId] = createNode( m, torso, null, headId );
     break;
 
     case headId:
     case head1Id:
     case head2Id:
-
-
-    m = translate(0.0, torsoHeight+0.5*headHeight, 0.0);
-	m = mult(m, rotate(-theta[head1Id], 1, 0, 0))
-	m = mult(m, rotate(theta[head2Id], 0, 1, 0));
-    m = mult(m, translate(0.0, -0.5*headHeight, 0.0));
-    figure[headId] = createNode( m, head, leftUpperArmId, null);
+        m = translate(0.0, torsoHeight+0.5*headHeight, 0.0);
+        m = mult(m, rotate(-theta[head1Id], 1, 0, 0))
+        m = mult(m, rotate(theta[head2Id], 0, 1, 0));
+        m = mult(m, translate(0.0, -0.5*headHeight, 0.0));
+        figure[headId] = createNode( m, head, leftUpperArmId, null);
     break;
 
-
     case leftUpperArmId:
-
-    m = translate(-(0.5*torsoWidth + upperArmWidth), 0.9*torsoHeight, 0.0);
-    if (flag) {
-        m = mult(m, rotate(180 - 15*Math.sin(angle), 1, 0, 0));
-    } else {
-	    m = mult(m, rotate(180 - theta[leftUpperArmId], 1, 0, 0));
-    }
-    figure[leftUpperArmId] = createNode( m, leftUpperArm, rightUpperArmId, leftLowerArmId );
+        m = translate(-(0.5*torsoWidth + upperArmWidth), 0.9*torsoHeight, 0.0);
+        if (flag) {
+            m = mult(m, rotate(180 - 15*Math.sin(angle), 1, 0, 0));
+        } else {
+            m = mult(m, rotate(180 - theta[leftUpperArmId], 1, 0, 0));
+        }
+        figure[leftUpperArmId] = createNode( m, leftUpperArm, rightUpperArmId, leftLowerArmId );
     break;
 
     case rightUpperArmId:
-
-    m = translate(0.5*torsoWidth + upperArmWidth, 0.9*torsoHeight, 0.0);
-    if (flag) {
-        m = mult(m, rotate(180 + 15*Math.sin(angle), 1, 0, 0));
-    } else {
-	    m = mult(m, rotate(180 - theta[rightUpperArmId], 1, 0, 0));
-    }
-    figure[rightUpperArmId] = createNode( m, rightUpperArm, leftUpperLegId, rightLowerArmId );
+        m = translate(0.5*torsoWidth + upperArmWidth, 0.9*torsoHeight, 0.0);
+        if (flag) {
+            m = mult(m, rotate(180 + 15*Math.sin(angle), 1, 0, 0));
+        } else {
+            m = mult(m, rotate(180 - theta[rightUpperArmId], 1, 0, 0));
+        }
+        figure[rightUpperArmId] = createNode( m, rightUpperArm, leftUpperLegId, rightLowerArmId );
     break;
 
     case leftUpperLegId:
-
-    m = translate(-(0.3*torsoWidth), 0.1*upperLegHeight, 0.0);
-    if (flag) {
-        m = mult(m, rotate(180 + 10*Math.sin(angle), 1, 0, 0));
-    } else {
-	    m = mult(m, rotate(180 - theta[leftUpperLegId], 1, 0, 0));
-    }
-    figure[leftUpperLegId] = createNode( m, leftUpperLeg, rightUpperLegId, leftLowerLegId );
+        m = translate(-(0.3*torsoWidth), 0.1*upperLegHeight, 0.0);
+        if (flag) {
+            m = mult(m, rotate(180 + 10*Math.sin(angle), 1, 0, 0));
+        } else {
+            m = mult(m, rotate(180 - theta[leftUpperLegId], 1, 0, 0));
+        }
+        figure[leftUpperLegId] = createNode( m, leftUpperLeg, rightUpperLegId, leftLowerLegId );
     break;
 
     case rightUpperLegId:
-
-    m = translate(0.3*torsoWidth, 0.1*upperLegHeight, 0.0);
-    if (flag) {
-        m = mult(m, rotate(180 - 10*Math.sin(angle), 1, 0, 0));
-    } else {
-	    m = mult(m, rotate(180 - theta[rightUpperLegId], 1, 0, 0));
-    }
-    figure[rightUpperLegId] = createNode( m, rightUpperLeg, null, rightLowerLegId );
+        m = translate(0.3*torsoWidth, 0.1*upperLegHeight, 0.0);
+        if (flag) {
+            m = mult(m, rotate(180 - 10*Math.sin(angle), 1, 0, 0));
+        } else {
+            m = mult(m, rotate(180 - theta[rightUpperLegId], 1, 0, 0));
+        }
+        figure[rightUpperLegId] = createNode( m, rightUpperLeg, null, rightLowerLegId );
     break;
 
     case leftLowerArmId:
-
-    m = translate(0.0, upperArmHeight, 0.0);
-    if (flag) {
-        m = mult(m, rotate(-Math.abs(10*Math.sin(angle)), 1, 0, 0));
-    } else {
-	    m = mult(m, rotate(-theta[leftLowerArmId], 1, 0, 0));
-    }
-    figure[leftLowerArmId] = createNode( m, leftLowerArm, null, null );
+        m = translate(0.0, upperArmHeight, 0.0);
+        if (flag) {
+            m = mult(m, rotate(-Math.abs(10*Math.sin(angle)), 1, 0, 0));
+        } else {
+            m = mult(m, rotate(-theta[leftLowerArmId], 1, 0, 0));
+        }
+        figure[leftLowerArmId] = createNode( m, leftLowerArm, null, null );
     break;
 
     case rightLowerArmId:
-
-    m = translate(0.0, upperArmHeight, 0.0);
-    if (flag) {
-        m = mult(m, rotate(-Math.abs(10*Math.sin(angle)), 1, 0, 0));
-    } else {
-	    m = mult(m, rotate(-theta[rightLowerArmId], 1, 0, 0));
-    }
-    figure[rightLowerArmId] = createNode( m, rightLowerArm, null, null );
+        m = translate(0.0, upperArmHeight, 0.0);
+        if (flag) {
+            m = mult(m, rotate(-Math.abs(10*Math.sin(angle)), 1, 0, 0));
+        } else {
+            m = mult(m, rotate(-theta[rightLowerArmId], 1, 0, 0));
+        }
+        figure[rightLowerArmId] = createNode( m, rightLowerArm, null, null );
     break;
 
     case leftLowerLegId:
-
-    m = translate(0.0, upperLegHeight, 0.0);
-    if (flag) {
-        m = mult(m, rotate(Math.abs(10 + 20*Math.sin(angle)), 1, 0, 0));
-    } else {
-	    m = mult(m, rotate(theta[leftLowerLegId], 1, 0, 0));
-    }
-    figure[leftLowerLegId] = createNode( m, leftLowerLeg, null, null );
+        m = translate(0.0, upperLegHeight, 0.0);
+        if (flag) {
+            m = mult(m, rotate(Math.abs(10 + 20*Math.sin(angle)), 1, 0, 0));
+        } else {
+            m = mult(m, rotate(theta[leftLowerLegId], 1, 0, 0));
+        }
+        figure[leftLowerLegId] = createNode( m, leftLowerLeg, null, null );
     break;
 
     case rightLowerLegId:
-
-    m = translate(0.0, upperLegHeight, 0.0);
-    if (flag) {
-        m = mult(m, rotate(Math.abs(10 - 20*Math.sin(angle)), 1, 0, 0));
-    } else {
-	    m = mult(m, rotate(theta[rightLowerLegId], 1, 0, 0));
-    }
-    figure[rightLowerLegId] = createNode( m, rightLowerLeg, null, null );
+        m = translate(0.0, upperLegHeight, 0.0);
+        if (flag) {
+            m = mult(m, rotate(Math.abs(10 - 20*Math.sin(angle)), 1, 0, 0));
+        } else {
+            m = mult(m, rotate(theta[rightLowerLegId], 1, 0, 0));
+        }
+        figure[rightLowerLegId] = createNode( m, rightLowerLeg, null, null );
     break;
-
     }
-
 }
 
 function traverse(Id) {
@@ -248,6 +238,7 @@ function traverse(Id) {
    if(figure[Id].sibling != null) traverse(figure[Id].sibling);
 }
 
+// the functions below is to instantiate the object parts
 function torso() {
 
     instanceMatrix = mult(modelViewMatrix, translate(0.0, 0.5*torsoHeight, 0.0) );
@@ -368,9 +359,8 @@ window.onload = function init() {
     gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
     gl.enable( gl.DEPTH_TEST );
 
-    //
+
     //  Load shaders and initialize attribute buffers
-    //
     program = initShaders( gl, "vertex-shader", "fragment-shader");
 
     gl.useProgram( program);
@@ -493,21 +483,25 @@ window.onload = function init() {
 
 
 var render = function() {
+    gl.clear( gl.COLOR_BUFFER_BIT );
+    traverse(torsoId);
 
-        gl.clear( gl.COLOR_BUFFER_BIT );
-        traverse(torsoId);
-        requestAnimFrame(render);
-        if (flag){
-            angle += 0.02;
+    // change the angle for animation
+    if (flag){
+        angle += 0.02;
+    }
+
+    // change the angle for object rotation
+    if (torsoFlag){
+        torsoAngle += 0.3;
+        if (torsoAngle == 2*Math.PI) {
+            torsoAngle = 0
         }
-        if (torsoFlag){
-            torsoAngle += 0.3;
-            if (torsoAngle == 2*Math.PI) {
-                torsoAngle = 0
-            }
-        }
-        if (flag || torsoFlag){
-            for(i=0; i<numNodes; i++) initNodes(i);
-        }
-        initNodes(rightUpperLegId);
-        initNodes(leftUpperLegId);}
+    }
+
+    // render object if there are changes in any of the angle
+    if (flag || torsoFlag){
+        for(i=0; i<numNodes; i++) initNodes(i);
+    }
+    requestAnimFrame(render);
+}

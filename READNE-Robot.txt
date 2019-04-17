@@ -1,0 +1,14 @@
+Worksheet 2
+by plus-satu [Bram Sedana W. - 1606824502] and [Rayza Arasj M. - 1606876052]
+
+Robot.html/js
+
+This robot is an object that consists of 10 cubes and 9 joints
+It has 10 angle that can be changed: 9 joints and the angle of the whole object by rotating the torso of robot
+
+The button Animate will make the robot do a walking animation
+While in animation, the slider won't affect the object
+Clicking the animate button again will stop the animation and change the angle according to the slider
+The start of the animation is always the same, which is from standing still
+
+The button Rotate Object will make the object rotate counter clockwise
