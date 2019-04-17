@@ -283,7 +283,7 @@ var render = function() {
     lowerRing();
 
     modelViewMatrix  = mult(modelViewMatrix, translate(0.0, LOWER_FINGER_HEIGHT, 0.0));
-    modelViewMatrix  = mult(modelViewMatrix, rotate(theta[LowerRing], 1, 0, 0) );
+    modelViewMatrix  = mult(modelViewMatrix, rotate(theta[UpperRing], 1, 0, 0) );
     upperRing();
 
     requestAnimFrame(render);
