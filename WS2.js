@@ -131,7 +131,7 @@ var torsoAngle = 0;
 
 // Parameters to control the material and lighting
 
-var lightPosition = vec4(0.0, 0.0, 1.0, 0.0);
+var lightPosition = vec4(0.5, 0.5, 15.0, 0.0);
 var lightAmbient = vec4(0.2, 0.2, 0.2, 1.0);
 var lightDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
 var lightSpecular = vec4(1.0, 1.0, 1.0, 1.0);
@@ -139,7 +139,7 @@ var lightSpecular = vec4(1.0, 1.0, 1.0, 1.0);
 var materialAmbient = vec4(1.0, 0.0, 1.0, 1.0);
 var materialDiffuse = vec4(1.0, 0.8, 0.0, 1.0);
 var materialSpecular = vec4(1.0, 0.8, 0.0, 1.0);
-var materialShininess = 100.0;
+var materialShininess = 10.0;
 
 var vBuffer;
 
@@ -552,6 +552,46 @@ function rightLowerLeg() {
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
+function floor() {
+    var s = scale4(30, 0.1, 20);
+    var instanceMatrix = mult(translate(0.0, -5, 0.0),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
+function ceiling() {
+    var s = scale4(30, 0.1, 20);
+    var instanceMatrix = mult(translate(0.0, 9.5, 0.0),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
+function leftWall() {
+    var s = scale4(20, 18, 0.1);
+    var instanceMatrix = mult(translate(-8, 0.0, 0.0),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
+function rightWall() {
+    var s = scale4(20, 18, 0.1);
+    var instanceMatrix = mult(translate(8, 0.0, 0.0),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
+function backWall() {
+    var s = scale4(30, 18, 0.1);
+    var instanceMatrix = mult(translate(0.0, -5, 0.0),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
 function updateThetaFist(delta) {
     theta1[LowerPinkie] += delta;
     theta1[UpperPinkie] += delta;
@@ -616,6 +656,30 @@ function updateAnimation() {
 var render = function() {
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    // Background
+
+    // Floor
+    modelViewMatrix = rotate(20,1,0,0);
+    floor();
+
+    // Ceiling
+    modelViewMatrix = rotate(-20,1,0,0);
+    ceiling();
+
+    // Left Wall
+    modelViewMatrix = translate(-5,1,-10,0);
+    modelViewMatrix = mult(modelViewMatrix,rotate(60,0,1,0));
+    leftWall();
+
+    // Right Wall
+    modelViewMatrix = translate(5,1,-10,0);
+    modelViewMatrix = mult(modelViewMatrix,rotate(-60,0,1,0));
+    rightWall();
+
+    // Back Wall
+    modelViewMatrix = translate(0,11.5,-10,0);
+    backWall();
 
     // Object 1 (Hand)
 
