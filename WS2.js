@@ -118,6 +118,17 @@ var upperLegWidth  = 0.9;
 var lowerLegHeight = 2.8;
 var lowerLegWidth  = 0.9;
 
+// Animation
+
+var flag = 0;
+var torsoFlag = 0;
+
+// angle that is used for animation
+var angle = 0;
+
+// angle that is used to rotate the whole object
+var torsoAngle = 0;
+
 // Parameters to control the material and lighting
 
 var lightPosition = vec4(0.0, 0.0, 1.0, 0.0);
@@ -329,7 +340,7 @@ function scale4(a, b, c) {
         theta2[head2Id] = parseInt(event.target.value);
     };
 
-    document.getElementById( "animateButton1" ).onclick = function() {
+    document.getElementById("animateButton1").onclick = function() {
         if (animation) {
             theta1Animation = theta1.slice();
             theta1 = theta1NonAnimation.slice();
@@ -340,6 +351,15 @@ function scale4(a, b, c) {
             toggleSlider(true);
         }
         animation = !animation;
+    };
+
+    document.getElementById("animateButton2").onclick = function () {
+        flag = !flag;
+        angle = 0;
+    };
+
+    document.getElementById("rotateButton").onclick = function () {
+        torsoFlag = !torsoFlag;
     };
 
     render();
@@ -667,9 +687,21 @@ var render = function() {
 
     // Object 2 (Robot)
 
+    if (flag){
+        angle += 0.02;
+    }
+
+    // change the angle for object rotation
+    if (torsoFlag){
+        torsoAngle += 0.3;
+        if (torsoAngle == 2*Math.PI) {
+            torsoAngle = 0
+        }
+    }
+
     // Torso
     modelViewMatrix = translate(5, 0, 0, 0);
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[torsoId], 0, 1, 0));
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[torsoId] + torsoAngle, 0, 1, 0 ));
     temp = modelViewMatrix;
     torso();
 
@@ -684,44 +716,78 @@ var render = function() {
     modelViewMatrix = temp;
 
     modelViewMatrix = mult(modelViewMatrix, translate(-(0.5*torsoWidth + upperArmWidth), 0.9*torsoHeight, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(180 - theta2[leftUpperArmId], 1, 0, 0));
+    if (flag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(180 - 15*Math.sin(angle), 1, 0, 0));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(180 - theta2[leftUpperArmId], 1, 0, 0));
+    }
     leftUpperArm();
 
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, upperArmHeight, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(-theta2[leftLowerArmId], 1, 0, 0));
+    if (flag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(-Math.abs(10*Math.sin(angle)), 1, 0, 0));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(-theta2[leftLowerArmId], 1, 0, 0));
+    }
     leftLowerArm();
 
     // RightArm
     modelViewMatrix = temp;
 
     modelViewMatrix = mult(modelViewMatrix, translate(0.5*torsoWidth + upperArmWidth, 0.9*torsoHeight, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(180 - theta2[rightUpperArmId], 1, 0, 0));
+    if (flag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(180 + 15*Math.sin(angle), 1, 0, 0));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(180 - theta2[rightUpperArmId], 1, 0, 0));
+    }
     rightUpperArm();
 
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, upperArmHeight, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(-theta2[rightLowerArmId], 1, 0, 0));
+    if (flag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(-Math.abs(10*Math.sin(angle)), 1, 0, 0));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(-theta2[rightLowerArmId], 1, 0, 0));
+    }
     rightLowerArm();
+
+    /////////
 
     // LeftLeg
     modelViewMatrix = temp;
     
     modelViewMatrix = mult(modelViewMatrix, translate(-(0.3*torsoWidth), 0.1*upperLegHeight, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(180 - theta2[leftUpperLegId], 1, 0, 0));
+    if (flag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(180 + 10*Math.sin(angle), 1, 0, 0));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(180 - theta2[leftUpperLegId], 1, 0, 0));
+    }
     leftUpperLeg();
 
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, upperLegHeight, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[leftLowerLegId], 1, 0, 0));
+    if (flag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(Math.abs(10 + 20*Math.sin(angle)), 1, 0, 0));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(theta2[leftLowerLegId], 1, 0, 0));
+    }
     leftLowerLeg();
 
     // RightLeg
     modelViewMatrix = temp;
 
     modelViewMatrix = mult(modelViewMatrix, translate(0.3*torsoWidth, 0.1*upperLegHeight, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(180 - theta2[rightUpperLegId], 1, 0, 0));
+    if (flag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(180 - 10*Math.sin(angle), 1, 0, 0));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(180 - theta2[rightUpperLegId], 1, 0, 0));
+    }
     rightUpperLeg();
 
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, upperLegHeight, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[rightLowerLegId], 1, 0, 0));
+    if (flag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(Math.abs(10 - 20*Math.sin(angle)), 1, 0, 0));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(theta2[rightLowerLegId], 1, 0, 0));
+    }
     rightLowerLeg();
 
     requestAnimFrame(render);

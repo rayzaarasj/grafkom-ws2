@@ -1,11 +1,11 @@
 "use strict";
 
-// var canvas;
-// var gl;
-// var program;
+var canvas;
+var gl;
+var program;
 
-// var projectionMatrix;
-// var modelViewMatrix;
+var projectionMatrix;
+var modelViewMatrix;
 
 var instanceMatrix;
 
