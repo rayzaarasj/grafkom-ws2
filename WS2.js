@@ -821,8 +821,6 @@ var render = function() {
     }
     rightLowerArm();
 
-    /////////
-
     // LeftLeg
     modelViewMatrix = temp;
     
