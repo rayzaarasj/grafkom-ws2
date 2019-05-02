@@ -232,6 +232,9 @@ function scale4(a, b, c) {
     projectionMatrix = ortho(-10, 10, -10, 10, -10, 10);
     gl.uniformMatrix4fv(gl.getUniformLocation(program, "projectionMatrix"),  false, flatten(projectionMatrix));
         
+
+    // Slider for Object 1 (Hand)
+
     document.getElementById("PalmYSlider").onchange = function(event) {
         theta1[PalmY] = event.target.value;
     };
@@ -280,59 +283,50 @@ function scale4(a, b, c) {
         theta1[UpperThumb] =  event.target.value;
     };
 
+    // Slider for Object 2 (Robot)
+
     document.getElementById("slider0").onchange = function(event) {
         theta2[torsoId ] = parseInt(event.target.value);
-        initNodes(torsoId);
     };
 
     document.getElementById("slider1").onchange = function(event) {
         theta2[head1Id] = parseInt(event.target.value);
-        initNodes(head1Id);
     };
 
     document.getElementById("slider2").onchange = function(event) {
         theta2[leftUpperArmId] = parseInt(event.target.value);
-        initNodes(leftUpperArmId);
     };
 
     document.getElementById("slider3").onchange = function(event) {
         theta2[leftLowerArmId] =  parseInt(event.target.value);
-        initNodes(leftLowerArmId);
     };
 
     document.getElementById("slider4").onchange = function(event) {
         theta2[rightUpperArmId] = parseInt(event.target.value);
-        initNodes(rightUpperArmId);
     };
 
     document.getElementById("slider5").onchange = function(event) {
         theta2[rightLowerArmId] =  parseInt(event.target.value);
-        initNodes(rightLowerArmId);
     };
 
     document.getElementById("slider6").onchange = function(event) {
         theta2[leftUpperLegId] = parseInt(event.target.value);
-        initNodes(leftUpperLegId);
     };
 
     document.getElementById("slider7").onchange = function(event) {
         theta2[leftLowerLegId] = parseInt(event.target.value);
-        initNodes(leftLowerLegId);
     };
 
     document.getElementById("slider8").onchange = function(event) {
         theta2[rightUpperLegId] = parseInt(event.target.value);
-        initNodes(rightUpperLegId);
     };
 
     document.getElementById("slider9").onchange = function(event) {
         theta2[rightLowerLegId] = parseInt(event.target.value);
-        initNodes(rightLowerLegId);
     };
 
     document.getElementById("slider10").onchange = function(event) {
         theta2[head2Id] = parseInt(event.target.value);
-        initNodes(head2Id);
     };
 
     document.getElementById( "animateButton1" ).onclick = function() {
@@ -462,7 +456,7 @@ function torso() {
     var s = scale4( torsoWidth, torsoHeight, torsoDepth);
     var instanceMatrix = mult(translate(0.0, 0.5*torsoHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
@@ -470,7 +464,7 @@ function head() {
     var s = scale4(headWidth, headHeight, headDepth);
     var instanceMatrix = mult(translate(0.0, 0.5 * headHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
@@ -478,15 +472,15 @@ function leftUpperArm() {
     var s = scale4(upperArmWidth, upperArmHeight, upperArmWidth);
     var instanceMatrix = mult(translate(0.5 * upperArmWidth, 0.5 * upperArmHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
 function leftLowerArm() {
-    var s = scale4(scale4(lowerArmWidth, lowerArmHeight, lowerArmWidth));
+    var s = scale4(lowerArmWidth, lowerArmHeight, lowerArmWidth);
     var instanceMatrix = mult(translate(0.5 * lowerArmWidth, 0.5 * lowerArmHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
@@ -494,7 +488,7 @@ function rightUpperArm() {
     var s = scale4(upperArmWidth, upperArmHeight, upperArmWidth);
     var instanceMatrix = mult(translate(-0.5 * upperArmWidth, 0.5 * upperArmHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
@@ -502,7 +496,7 @@ function rightLowerArm() {
     var s = scale4(lowerArmWidth, lowerArmHeight, lowerArmWidth);
     var instanceMatrix = mult(translate(-0.5 * lowerArmWidth, 0.5 * lowerArmHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
@@ -510,7 +504,7 @@ function leftUpperLeg() {
     var s = scale4(upperLegWidth, upperLegHeight, upperLegWidth);
     var instanceMatrix = mult(translate(0.0, 0.6 * upperLegHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
@@ -518,7 +512,7 @@ function leftLowerLeg() {
     var s = scale4(lowerLegWidth, lowerLegHeight, lowerLegWidth);
     var instanceMatrix = mult(translate( 0.0, 0.5 * lowerLegHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
@@ -526,7 +520,7 @@ function rightUpperLeg() {
     var s = scale4(upperLegWidth, upperLegHeight, upperLegWidth);
     var instanceMatrix = mult(translate(0.0, 0.6 * upperLegHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
@@ -534,7 +528,7 @@ function rightLowerLeg() {
     var s = scale4(lowerLegWidth, lowerLegHeight, lowerLegWidth);
     var instanceMatrix = mult(translate(0.0, 0.5 * lowerLegHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(instanceMatrix));
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
@@ -612,7 +606,8 @@ var render = function() {
     var temp;
 
     // Palm
-    modelViewMatrix = rotate(theta1[PalmY], 0, 1, 0);
+    modelViewMatrix = translate(-5, 0, 0, 0);
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta1[PalmY], 0, 1, 0));
     modelViewMatrix = mult(modelViewMatrix, rotate(theta1[PalmZ], 0, 0, 1));
     temp = modelViewMatrix;
     palm();
@@ -673,7 +668,8 @@ var render = function() {
     // Object 2 (Robot)
 
     // Torso
-    modelViewMatrix = rotate(theta2[torsoId], 0, 1, 0);
+    modelViewMatrix = translate(5, 0, 0, 0);
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[torsoId], 0, 1, 0));
     temp = modelViewMatrix;
     torso();
 
@@ -688,48 +684,44 @@ var render = function() {
     modelViewMatrix = temp;
 
     modelViewMatrix = mult(modelViewMatrix, translate(-(0.5*torsoWidth + upperArmWidth), 0.9*torsoHeight, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(180 - theta[leftUpperArmId], 1, 0, 0));
+    modelViewMatrix = mult(modelViewMatrix, rotate(180 - theta2[leftUpperArmId], 1, 0, 0));
     leftUpperArm();
 
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, upperArmHeight, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[PalmZ], 0, 0, 1));
+    modelViewMatrix = mult(modelViewMatrix, rotate(-theta2[leftLowerArmId], 1, 0, 0));
     leftLowerArm();
 
     // RightArm
     modelViewMatrix = temp;
 
-    modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[PalmZ], 0, 0, 1));
+    modelViewMatrix = mult(modelViewMatrix, translate(0.5*torsoWidth + upperArmWidth, 0.9*torsoHeight, 0.0));
+    modelViewMatrix = mult(modelViewMatrix, rotate(180 - theta2[rightUpperArmId], 1, 0, 0));
     rightUpperArm();
 
-    modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[PalmZ], 0, 0, 1));
+    modelViewMatrix = mult(modelViewMatrix, translate(0.0, upperArmHeight, 0.0));
+    modelViewMatrix = mult(modelViewMatrix, rotate(-theta2[rightLowerArmId], 1, 0, 0));
     rightLowerArm();
 
     // LeftLeg
     modelViewMatrix = temp;
     
-    modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[PalmZ], 0, 0, 1));
-    temp = modelViewMatrix;
+    modelViewMatrix = mult(modelViewMatrix, translate(-(0.3*torsoWidth), 0.1*upperLegHeight, 0.0));
+    modelViewMatrix = mult(modelViewMatrix, rotate(180 - theta2[leftUpperLegId], 1, 0, 0));
     leftUpperLeg();
 
-    modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[PalmZ], 0, 0, 1));
-    temp = modelViewMatrix;
+    modelViewMatrix = mult(modelViewMatrix, translate(0.0, upperLegHeight, 0.0));
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[leftLowerLegId], 1, 0, 0));
     leftLowerLeg();
 
     // RightLeg
     modelViewMatrix = temp;
 
-    modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[PalmZ], 0, 0, 1));
-    temp = modelViewMatrix;
+    modelViewMatrix = mult(modelViewMatrix, translate(0.3*torsoWidth, 0.1*upperLegHeight, 0.0));
+    modelViewMatrix = mult(modelViewMatrix, rotate(180 - theta2[rightUpperLegId], 1, 0, 0));
     rightUpperLeg();
 
-    modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[PalmZ], 0, 0, 1));
-    temp = modelViewMatrix;
+    modelViewMatrix = mult(modelViewMatrix, translate(0.0, upperLegHeight, 0.0));
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[rightLowerLegId], 1, 0, 0));
     rightLowerLeg();
 
     requestAnimFrame(render);
