@@ -153,7 +153,8 @@ var materialShininess = 100.0;
 var jeansImage;
 var lowerFingerImage;
 var metalicImage;
-var woolImage
+var woolImage;
+var woodImage;
 var texture;
 
 // Parameters for GL Buffer
@@ -294,6 +295,7 @@ function configureTexture(image) {
     lowerFingerImage = document.getElementById("lower-finger-texture");
     metalicImage = document.getElementById("metalic-texture");
     woolImage = document.getElementById("wool-texture");
+    woodImage = document.getElementById("wood-texture");
 
     // Slider for Object 1 (Hand)
 
@@ -709,7 +711,7 @@ var render = function() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // Background
-
+    configureTexture(woodImage);
     // Floor
     modelViewMatrix = rotate(20,1,0,0);
     floor();
