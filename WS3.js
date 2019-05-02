@@ -214,7 +214,6 @@ function scale4(a, b, c) {
 }
 
 function configureTexture(image) {
-    texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
@@ -274,23 +273,23 @@ function configureTexture(image) {
     var vTexCoord = gl.getAttribLocation(program, "vTexCoord");
     gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vTexCoord);
-    
+
     var ambientProduct = mult(lightAmbient, materialAmbient);
     var diffuseProduct = mult(lightDiffuse, materialDiffuse);
     var specularProduct = mult(lightSpecular, materialSpecular);
-    
+
     modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
 
     gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"), flatten(ambientProduct));
     gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"), flatten(diffuseProduct));
     gl.uniform4fv(gl.getUniformLocation(program, "specularProduct"), flatten(specularProduct));
     gl.uniform4fv(gl.getUniformLocation(program, "lightPosition"), flatten(lightPosition));
-    
+
     gl.uniform1f(gl.getUniformLocation(program, "shininess"), materialShininess);
-        
+
     projectionMatrix = ortho(-10, 10, -10, 10, -10, 10);
     gl.uniformMatrix4fv(gl.getUniformLocation(program, "projectionMatrix"),  false, flatten(projectionMatrix));
-        
+
     jeansImage = document.getElementById("jeans-texture");
     lowerFingerImage = document.getElementById("lower-finger-texture");
     metalicImage = document.getElementById("metalic-texture");
@@ -414,6 +413,8 @@ function configureTexture(image) {
     document.getElementById("rotateButton").onclick = function () {
         torsoFlag = !torsoFlag;
     };
+
+    texture = gl.createTexture();
 
     render();
 }
@@ -674,9 +675,9 @@ function updateAnimation() {
                 break;
             }
         }
-        
+
         theta1[PalmZ] += directionRL;
-        
+
         if (Math.abs(theta1[PalmZ]) == 45) {
             directionRL = -directionRL;
         }
@@ -703,7 +704,7 @@ function updateAnimation() {
         default:
 
         break;
-    } 
+    }
 }
 
 var render = function() {
@@ -763,7 +764,7 @@ var render = function() {
 
     // Ring Finger
     modelViewMatrix = temp;
-    
+
     configureTexture(lowerFingerImage);
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
     modelViewMatrix = mult(modelViewMatrix, rotate(theta1[LowerRing], 1, 0, 0));
@@ -886,7 +887,7 @@ var render = function() {
 
     // LeftLeg
     modelViewMatrix = temp;
-    
+
     configureTexture(jeansImage);
     modelViewMatrix = mult(modelViewMatrix, translate(-(0.3*torsoWidth), 0.1*upperLegHeight, 0.0));
     if (flag) {
