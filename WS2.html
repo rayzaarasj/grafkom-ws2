@@ -3,7 +3,9 @@
 <script id="vertex-shader" type="x-shader/x-vertex">
 attribute  vec4 vPosition;
 attribute  vec3 vNormal;
+attribute  vec2 vTexCoord;
 varying vec4 fColor;
+varying vec2 fTexCoord;
 
 uniform vec4 ambientProduct, diffuseProduct, specularProduct;
 uniform mat4 modelViewMatrix;
@@ -42,7 +44,7 @@ void main() {
 
     gl_Position = projectionMatrix * modelViewMatrix * vPosition;
     fColor = ambient + diffuse +specular;
-    
+    fTexCoord = vTexCoord;
     fColor.a = 1.0;
 }
 </script>
@@ -50,8 +52,11 @@ void main() {
 <script id="fragment-shader" type="x-shader/x-fragment">
 precision mediump float;
 varying  vec4 fColor;
+
+varying vec2 fTexCoord;
+uniform sampler2D texture;
 void main() {
-    gl_FragColor = fColor;
+    gl_FragColor = fColor * texture2D( texture, fTexCoord );
 }
 </script>
 
@@ -240,5 +245,9 @@ void main() {
                 </div>
         </div>
     </div>
+    <img id = "jeans-texture" src = "jeans-texture.jpg" hidden></img>
+    <img id = "lower-finger-texture" src = "lower-finger-texture.jpg" hidden></img>
+    <img id = "metalic-texture" src = "metalic-texture.jpg" hidden></img>
+    <img id = "wool-texture" src = "wool-texture.png" hidden></img>
 </body>
 </html>

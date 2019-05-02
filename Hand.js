@@ -6,6 +6,14 @@ var NumVertices = 36; //(6 faces)(2 triangles/face)(3 vertices/triangle)
 
 var points = [];
 var normals = [];
+var texCoordsArray = [];
+
+var texCoord = [
+    vec2(0, 0),
+    vec2(0, 1),
+    vec2(1, 1),
+    vec2(1, 0)
+];
 
 var vertices = [
     vec4(-0.5, -0.5,  0.5, 1.0),
@@ -69,9 +77,9 @@ var lightAmbient = vec4(0.2, 0.2, 0.2, 1.0);
 var lightDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
 var lightSpecular = vec4(1.0, 1.0, 1.0, 1.0);
 
-var materialAmbient = vec4(1.0, 0.0, 1.0, 1.0);
-var materialDiffuse = vec4(1.0, 0.8, 0.0, 1.0);
-var materialSpecular = vec4(1.0, 0.8, 0.0, 1.0);
+var materialAmbient = vec4(1.0, 1.0, 1.0, 1.0);
+var materialDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
+var materialSpecular = vec4(1.0, 1.0, 1.0, 1.0);
 var materialShininess = 100.0;
 
 var ambientColor, diffuseColor, specularColor;
@@ -98,6 +106,8 @@ var modelViewMatrixLoc;
 
 var vBuffer, cBuffer;
 
+var image, image2, texture;
+
 function quad(a, b, c, d) {
 
     var t1 = subtract(vertices[b], vertices[a]);
@@ -107,16 +117,27 @@ function quad(a, b, c, d) {
 
     points.push(vertices[a]);
     normals.push(normal);
+    texCoordsArray.push(texCoord[0]);
+
     points.push(vertices[b]);
     normals.push(normal);
+    texCoordsArray.push(texCoord[1]);
+
     points.push(vertices[c]);
     normals.push(normal);
+    texCoordsArray.push(texCoord[2]);
+
     points.push(vertices[a]);
     normals.push(normal);
+    texCoordsArray.push(texCoord[0]);
+
     points.push(vertices[c]);
     normals.push(normal);
+    texCoordsArray.push(texCoord[2]);
+
     points.push(vertices[d]);
     normals.push(normal);
+    texCoordsArray.push(texCoord[3]);
 }
 
 
@@ -135,6 +156,20 @@ function scale4(a, b, c) {
    result[1][1] = b;
    result[2][2] = c;
    return result;
+}
+
+function configureTexture( image ) {
+    texture = gl.createTexture();
+    gl.bindTexture( gl.TEXTURE_2D, texture );
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGB,
+         gl.RGB, gl.UNSIGNED_BYTE, image );
+    gl.generateMipmap( gl.TEXTURE_2D );
+    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,
+                      gl.NEAREST_MIPMAP_LINEAR );
+    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST );
+
+    gl.uniform1i(gl.getUniformLocation(program, "texture"), 0);
 }
 
 window.onload = function init() {
@@ -179,6 +214,15 @@ window.onload = function init() {
     var vPosition = gl.getAttribLocation(program, "vPosition");
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
+
+    var tBuffer = gl.createBuffer();
+    gl.bindBuffer( gl.ARRAY_BUFFER, tBuffer );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(texCoordsArray), gl.STATIC_DRAW );
+
+    var vTexCoord = gl.getAttribLocation( program, "vTexCoord" );
+    gl.vertexAttribPointer( vTexCoord, 2, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( vTexCoord );
+    
     
     var ambientProduct = mult(lightAmbient, materialAmbient);
     var diffuseProduct = mult(lightDiffuse, materialDiffuse);
@@ -192,6 +236,9 @@ window.onload = function init() {
     gl.uniform4fv(gl.getUniformLocation(program, "lightPosition"), flatten(lightPosition));
     
     gl.uniform1f(gl.getUniformLocation(program, "shininess"), materialShininess);
+    
+    image = document.getElementById("texImage");
+    image2 = document.getElementById("texImage2");
         
     projectionMatrix = ortho(-10, 10, -10, 10, -10, 10);
     gl.uniformMatrix4fv(gl.getUniformLocation(program, "projectionMatrix"),  false, flatten(projectionMatrix));
@@ -435,11 +482,15 @@ var render = function() {
 
     var temp;
 
+    configureTexture( image );
+
     // Palm
     modelViewMatrix = rotate(theta[PalmY], 0, 1, 0);
     modelViewMatrix = mult(modelViewMatrix, rotate(theta[PalmZ], 0, 0, 1));
     temp = modelViewMatrix;
     palm();
+
+    configureTexture( image2 );
 
     // Index Finger
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
