@@ -7,12 +7,19 @@ var NumVertices = 36; //(6 faces)(2 triangles/face)(3 vertices/triangle)
 var vertices = [
     vec4(-0.5, -0.5,  0.5, 1.0),
     vec4(-0.5,  0.5,  0.5, 1.0),
-    vec4( 0.5,  0.5,  0.5, 1.0),
-    vec4( 0.5, -0.5,  0.5, 1.0),
+    vec4(0.5,  0.5,  0.5, 1.0),
+    vec4(0.5, -0.5,  0.5, 1.0),
     vec4(-0.5, -0.5, -0.5, 1.0),
     vec4(-0.5,  0.5, -0.5, 1.0),
-    vec4( 0.5,  0.5, -0.5, 1.0),
-    vec4( 0.5, -0.5, -0.5, 1.0)
+    vec4(0.5,  0.5, -0.5, 1.0),
+    vec4(0.5, -0.5, -0.5, 1.0)
+];
+
+var texCoord = [
+    vec2(0, 0),
+    vec2(0, 1),
+    vec2(1, 1),
+    vec2(1, 0)
 ];
 
 // Shader transformation matrices
@@ -24,7 +31,7 @@ var modelViewMatrixLoc;
 // Object 1 (Hand)
 // Default parameters
 
-var theta1 = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var theta1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 // Array of rotation angles (in degrees) for each rotation axis
 
@@ -43,12 +50,12 @@ var UpperThumb = 11;
 
 // Parameters controlling the size of the Arm and Fingers
 
-var PALM_HEIGHT      = 3.0;
-var PALM_WIDTH       = 4.0;
-var HAND_DEPTH       = 0.7;
+var PALM_HEIGHT = 3.0;
+var PALM_WIDTH = 4.0;
+var HAND_DEPTH = 0.7;
 var LOWER_FINGER_HEIGHT = 1.7;
-var LOWER_FINGER_WIDTH  = 0.7;
-var UPPER_FINGER_WIDTH  = 0.6;
+var LOWER_FINGER_WIDTH = 0.7;
+var UPPER_FINGER_WIDTH = 0.6;
 var PINKIE_HEIGHT = 1.5;
 var RING_HEIGHT = 1.7;
 var MIDDLE_HEIGHT = 1.9;
@@ -78,8 +85,8 @@ var FIST = 2;
 var directionFist = 1;
 var countFist = 0;
 
-var theta1NonAnimation = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-var theta1Animation = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var theta1NonAnimation = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var theta1Animation = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 // Object 2 (Robot)
 // angle of each rotation, the order is according to the identifier above
@@ -136,15 +143,32 @@ var lightAmbient = vec4(0.2, 0.2, 0.2, 1.0);
 var lightDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
 var lightSpecular = vec4(1.0, 1.0, 1.0, 1.0);
 
+<<<<<<< HEAD
 var materialAmbient = vec4(1.0, 0.0, 1.0, 1.0);
 var materialDiffuse = vec4(1.0, 0.8, 0.0, 1.0);
 var materialSpecular = vec4(1.0, 0.8, 0.0, 1.0);
 var materialShininess = 10.0;
+=======
+var materialAmbient = vec4(1.0, 1.0, 1.0, 1.0);
+var materialDiffuse = vec4(1.0, 1.0, 1.0, 1.0);
+var materialSpecular = vec4(1.0, 1.0, 1.0, 1.0);
+var materialShininess = 100.0;
+>>>>>>> e8e66ea842c2f6382584bc65e66d4a50137bb768
+
+// Parameters for texture and image
+
+var jeansImage;
+var lowerFingerImage;
+var metalicImage;
+var woolImage
+var texture;
+
+// Parameters for GL Buffer
 
 var vBuffer;
-
 var points = [];
 var normals = [];
+var texCoords = [];
 
 function quad(a, b, c, d) {
 
@@ -155,16 +179,27 @@ function quad(a, b, c, d) {
 
     points.push(vertices[a]);
     normals.push(normal);
+    texCoords.push(texCoord[0]);
+
     points.push(vertices[b]);
     normals.push(normal);
+    texCoords.push(texCoord[1]);
+
     points.push(vertices[c]);
     normals.push(normal);
+    texCoords.push(texCoord[2]);
+
     points.push(vertices[a]);
     normals.push(normal);
+    texCoords.push(texCoord[0]);
+
     points.push(vertices[c]);
     normals.push(normal);
+    texCoords.push(texCoord[2]);
+
     points.push(vertices[d]);
     normals.push(normal);
+    texCoords.push(texCoord[3]);
 }
 
 function colorCube() {
@@ -182,7 +217,18 @@ function scale4(a, b, c) {
     result[1][1] = b;
     result[2][2] = c;
     return result;
- }
+}
+
+function configureTexture(image) {
+    texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.uniform1i(gl.getUniformLocation(program, "texture"), 0);
+}
 
  window.onload = function init() {
 
@@ -226,6 +272,14 @@ function scale4(a, b, c) {
     var vPosition = gl.getAttribLocation(program, "vPosition");
     gl.vertexAttribPointer(vPosition, 4, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
+
+    var tBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, tBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(texCoords), gl.STATIC_DRAW);
+
+    var vTexCoord = gl.getAttribLocation(program, "vTexCoord");
+    gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(vTexCoord);
     
     var ambientProduct = mult(lightAmbient, materialAmbient);
     var diffuseProduct = mult(lightDiffuse, materialDiffuse);
@@ -243,6 +297,10 @@ function scale4(a, b, c) {
     projectionMatrix = ortho(-10, 10, -10, 10, -10, 10);
     gl.uniformMatrix4fv(gl.getUniformLocation(program, "projectionMatrix"),  false, flatten(projectionMatrix));
         
+    jeansImage = document.getElementById("jeans-texture");
+    lowerFingerImage = document.getElementById("lower-finger-texture");
+    metalicImage = document.getElementById("metalic-texture");
+    woolImage = document.getElementById("wool-texture");
 
     // Slider for Object 1 (Hand)
 
@@ -473,7 +531,7 @@ function upperThumb() {
 // Instantiate Object Parts for Object2 (Robot)
 
 function torso() {
-    var s = scale4( torsoWidth, torsoHeight, torsoDepth);
+    var s = scale4(torsoWidth, torsoHeight, torsoDepth);
     var instanceMatrix = mult(translate(0.0, 0.5*torsoHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
     gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
@@ -530,7 +588,7 @@ function leftUpperLeg() {
 
 function leftLowerLeg() {
     var s = scale4(lowerLegWidth, lowerLegHeight, lowerLegWidth);
-    var instanceMatrix = mult(translate( 0.0, 0.5 * lowerLegHeight, 0.0),s);
+    var instanceMatrix = mult(translate(0.0, 0.5 * lowerLegHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
     gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
@@ -690,6 +748,7 @@ var render = function() {
     var temp;
 
     // Palm
+    configureTexture(woolImage);
     modelViewMatrix = translate(-5, 0, 0, 0);
     modelViewMatrix = mult(modelViewMatrix, rotate(theta1[PalmY], 0, 1, 0));
     modelViewMatrix = mult(modelViewMatrix, rotate(theta1[PalmZ], 0, 0, 1));
@@ -697,21 +756,25 @@ var render = function() {
     palm();
 
     // Index Finger
+    configureTexture(lowerFingerImage);
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
     modelViewMatrix = mult(modelViewMatrix, rotate(theta1[LowerPinkie], 1, 0, 0));
     lowerPinkie();
 
+    configureTexture(metalicImage);
     modelViewMatrix  = mult(modelViewMatrix, translate(0.0, LOWER_FINGER_HEIGHT, 0.0));
     modelViewMatrix  = mult(modelViewMatrix, rotate(theta1[UpperPinkie], 1, 0, 0));
     upperPinkie();
 
     // Ring Finger
     modelViewMatrix = temp;
-
+    
+    configureTexture(lowerFingerImage);
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
     modelViewMatrix = mult(modelViewMatrix, rotate(theta1[LowerRing], 1, 0, 0));
     lowerRing();
 
+    configureTexture(metalicImage);
     modelViewMatrix  = mult(modelViewMatrix, translate(0.0, LOWER_FINGER_HEIGHT, 0.0));
     modelViewMatrix  = mult(modelViewMatrix, rotate(theta1[UpperRing], 1, 0, 0));
     upperRing();
@@ -719,10 +782,12 @@ var render = function() {
     // Middle Finger
     modelViewMatrix = temp;
 
+    configureTexture(lowerFingerImage);
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
     modelViewMatrix = mult(modelViewMatrix, rotate(theta1[LowerMiddle], 1, 0, 0));
     lowerMiddle();
 
+    configureTexture(metalicImage);
     modelViewMatrix  = mult(modelViewMatrix, translate(0.0, LOWER_FINGER_HEIGHT, 0.0));
     modelViewMatrix  = mult(modelViewMatrix, rotate(theta1[UpperMiddle], 1, 0, 0));
     upperMiddle();
@@ -730,10 +795,12 @@ var render = function() {
     // Index Finger
     modelViewMatrix = temp;
 
+    configureTexture(lowerFingerImage);
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
     modelViewMatrix = mult(modelViewMatrix, rotate(theta1[LowerIndex], 1, 0, 0));
     lowerIndex();
 
+    configureTexture(metalicImage);
     modelViewMatrix  = mult(modelViewMatrix, translate(0.0, LOWER_FINGER_HEIGHT, 0.0));
     modelViewMatrix  = mult(modelViewMatrix, rotate(theta1[UpperIndex], 1, 0, 0));
     upperIndex();
@@ -741,10 +808,12 @@ var render = function() {
     // Thumb
     modelViewMatrix = temp;
 
+    configureTexture(lowerFingerImage);
     modelViewMatrix  = mult(modelViewMatrix, translate(0.5 * PALM_WIDTH, 0.0, 0.0));
     modelViewMatrix  = mult(modelViewMatrix, rotate(-theta1[LowerThumb], 0, 1, 0));
     lowerThumb();
 
+    configureTexture(metalicImage);
     modelViewMatrix  = mult(modelViewMatrix, translate(0.5 * THUMB_WIDTH, 0.0, 0.0));
     modelViewMatrix  = mult(modelViewMatrix, rotate(-theta1[UpperThumb], 0, 1, 0));
     upperThumb();
@@ -764,12 +833,14 @@ var render = function() {
     }
 
     // Torso
+    configureTexture(woolImage);
     modelViewMatrix = translate(5, 0, 0, 0);
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[torsoId] + torsoAngle, 0, 1, 0 ));
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta2[torsoId] + torsoAngle, 0, 1, 0));
     temp = modelViewMatrix;
     torso();
 
     // Head
+    configureTexture(metalicImage);
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, torsoHeight+0.5*headHeight, 0.0));
     modelViewMatrix = mult(modelViewMatrix, rotate(-theta2[head1Id], 1, 0, 0));
     modelViewMatrix = mult(modelViewMatrix, rotate(theta2[head2Id], 0, 1, 0));
@@ -779,6 +850,7 @@ var render = function() {
     // LeftArm
     modelViewMatrix = temp;
 
+    configureTexture(woolImage);
     modelViewMatrix = mult(modelViewMatrix, translate(-(0.5*torsoWidth + upperArmWidth), 0.9*torsoHeight, 0.0));
     if (flag) {
         modelViewMatrix = mult(modelViewMatrix, rotate(180 - 15*Math.sin(angle), 1, 0, 0));
@@ -787,6 +859,7 @@ var render = function() {
     }
     leftUpperArm();
 
+    configureTexture(metalicImage);
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, upperArmHeight, 0.0));
     if (flag) {
         modelViewMatrix = mult(modelViewMatrix, rotate(-Math.abs(10*Math.sin(angle)), 1, 0, 0));
@@ -798,6 +871,7 @@ var render = function() {
     // RightArm
     modelViewMatrix = temp;
 
+    configureTexture(woolImage);
     modelViewMatrix = mult(modelViewMatrix, translate(0.5*torsoWidth + upperArmWidth, 0.9*torsoHeight, 0.0));
     if (flag) {
         modelViewMatrix = mult(modelViewMatrix, rotate(180 + 15*Math.sin(angle), 1, 0, 0));
@@ -806,6 +880,7 @@ var render = function() {
     }
     rightUpperArm();
 
+    configureTexture(metalicImage);
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, upperArmHeight, 0.0));
     if (flag) {
         modelViewMatrix = mult(modelViewMatrix, rotate(-Math.abs(10*Math.sin(angle)), 1, 0, 0));
@@ -814,11 +889,10 @@ var render = function() {
     }
     rightLowerArm();
 
-    /////////
-
     // LeftLeg
     modelViewMatrix = temp;
     
+    configureTexture(jeansImage);
     modelViewMatrix = mult(modelViewMatrix, translate(-(0.3*torsoWidth), 0.1*upperLegHeight, 0.0));
     if (flag) {
         modelViewMatrix = mult(modelViewMatrix, rotate(180 + 10*Math.sin(angle), 1, 0, 0));
@@ -827,6 +901,7 @@ var render = function() {
     }
     leftUpperLeg();
 
+    configureTexture(metalicImage);
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, upperLegHeight, 0.0));
     if (flag) {
         modelViewMatrix = mult(modelViewMatrix, rotate(Math.abs(10 + 20*Math.sin(angle)), 1, 0, 0));
@@ -838,6 +913,7 @@ var render = function() {
     // RightLeg
     modelViewMatrix = temp;
 
+    configureTexture(jeansImage);
     modelViewMatrix = mult(modelViewMatrix, translate(0.3*torsoWidth, 0.1*upperLegHeight, 0.0));
     if (flag) {
         modelViewMatrix = mult(modelViewMatrix, rotate(180 - 10*Math.sin(angle), 1, 0, 0));
@@ -846,6 +922,7 @@ var render = function() {
     }
     rightUpperLeg();
 
+    configureTexture(metalicImage);
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, upperLegHeight, 0.0));
     if (flag) {
         modelViewMatrix = mult(modelViewMatrix, rotate(Math.abs(10 - 20*Math.sin(angle)), 1, 0, 0));
