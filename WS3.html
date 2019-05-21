@@ -72,12 +72,18 @@ void main() {
     <div style="display: flex">
         <div>
             <div>
+                Hand
+            </div>
+            <div>
                 <button id="animateButton1">
                     Toggle Animation
                 </button>
             </div>
         </div>
         <div style="margin-left:5rem">
+            <div>
+                Robot
+            </div>
             <div>
                 <button id="animateButton2">
                 Animate
@@ -86,6 +92,79 @@ void main() {
             <div>
                 <button id="rotateButton">
                 Rotate Object
+                </button>
+            </div>
+        </div>
+        <div style="margin-left: 5rem">
+            <h2>
+                Modifier for Dino
+            </h2>
+            <div>
+                Torso Y-Rotation -180
+                <input id="dinoTorso" type="range"
+                min="-180" max="180" step="10" value="0"
+                />
+                180
+            </div>
+            <div>
+                Head Y-Rotation -60
+                <input id="dinoHead" type="range"
+                min="-60" max="60" step="10" value="0"
+                />
+                60
+            </div>
+            <div>
+                Left Upper Leg Z-Rotation -60
+                <input id="dinoLeftUpperLeg" type="range"
+                min="-60" max="60" step="10" value="0"
+                />
+                60
+            </div>
+            <div>
+                Left Lower Leg Z-Rotation 0
+                <input id="dinoLeftLowerLeg" type="range"
+                min="0" max="60" step="10" value="0"
+                />
+                60
+            </div>
+            <div>
+                Right Upper Leg Z-Rotation -60
+                <input id="dinoRightUpperLeg" type="range"
+                min="-60" max="60" step="10" value="0"
+                />
+                60
+            </div>
+            <div>
+                Right Lower Leg Z-Rotation 0
+                <input id="dinoRightLowerLeg" type="range"
+                min="0" max="60" step="10" value="0"
+                />
+                60
+            </div>
+            <div>
+                Tail1 Y-Rotation -30
+                <input id="dinoTail1" type="range"
+                min="-30" max="30" step="10" value="0"
+                />
+                30
+            </div>
+            <div>
+                Tail2 Y-Rotation -20
+                <input id="dinoTail2" type="range"
+                min="-20" max="20" step="10" value="0"
+                />
+                20
+            </div>
+            <div>
+                Tail3 Y-Rotation -15
+                <input id="dinoTail3" type="range"
+                min="-15" max="15" step="5" value="0"
+                />
+                15
+            </div>
+            <div>
+                <button id="animateDinoButton">
+                    Toggle Animation
                 </button>
             </div>
         </div>

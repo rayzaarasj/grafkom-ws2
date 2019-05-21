@@ -138,7 +138,7 @@ var torsoAngle = 0;
 // Object 3 (Dino)
 // angle of each rotation, the order is according to the identifier
 
-var theta3 = [15,0,25,-30,25,-30,20,0,3];
+var thetaDino = [0,0,0,0,0,0,0,0,0];
 
 // Identifier of each object parts
 
@@ -153,29 +153,35 @@ var dinoTail2Id = 7;
 var dinoTail3Id = 8;
 
 // The size of object parts
-var scaler = 3;
+var dinoScale = 3;
 
-var dinoTorsoWidth      = scaler * 1.4;
-var dinoTorsoHeight     = scaler * 0.8;
-var dinoTorsoDepth      = scaler * 0.7;
-var dinoHeadWidth       = scaler * 1;
-var dinoHeadHeight      = scaler * 0.75;
-var dinoHeadDepth       = scaler * 0.8;
-var dinoUpperLegWidth   = scaler * 0.55;
-var dinoUpperLegHeight  = scaler * 0.7;
-var dinoUpperLegDepth   = scaler * 0.4;
-var dinoLowerLegWidth   = scaler * 0.4;
-var dinoLowerLegHeight  = scaler * 0.8;
-var dinoLowerLegDepth   = scaler * 0.4;
-var dinoTail1Width      = scaler * 0.7;
-var dinoTail1Height     = scaler * 0.4;
-var dinoTail1Depth      = scaler * 0.45;
-var dinoTail2Width      = scaler * 0.5;
-var dinoTail2Height     = scaler * 0.25;
-var dinoTail2Depth      = scaler * 0.33;
-var dinoTail3Width      = scaler * 0.35;
-var dinoTail3Height     = scaler * 0.15;
-var dinoTail3Depth      = scaler * 0.2;
+var dinoTorsoWidth = dinoScale * 1.4;
+var dinoTorsoHeight = dinoScale * 0.8;
+var dinoTorsoDepth = dinoScale * 0.7;
+var dinoHeadWidth = dinoScale * 1;
+var dinoHeadHeight = dinoScale * 0.75;
+var dinoHeadDepth = dinoScale * 0.8;
+var dinoUpperLegWidth = dinoScale * 0.5;
+var dinoUpperLegHeight = dinoScale * 0.7;
+var dinoUpperLegDepth = dinoScale * 0.4;
+var dinoLowerLegWidth = dinoScale * 0.5;
+var dinoLowerLegHeight = dinoScale * 0.6;
+var dinoLowerLegDepth = dinoScale * 0.4;
+var dinoTail1Width = dinoScale * 0.7;
+var dinoTail1Height = dinoScale * 0.4;
+var dinoTail1Depth = dinoScale * 0.45;
+var dinoTail2Width = dinoScale * 0.5;
+var dinoTail2Height = dinoScale * 0.25;
+var dinoTail2Depth = dinoScale * 0.33;
+var dinoTail3Width = dinoScale * 0.35;
+var dinoTail3Height = dinoScale * 0.15;
+var dinoTail3Depth = dinoScale * 0.2;
+
+// Animation
+var thetaDinoAnimation = [0,0,0,0,0,0,0,0,0];
+var thetaDinoNonAnimation = [0,0,0,0,0,0,0,0,0];
+
+var dinoAnimationFlag = false;
 
 // Parameters to control the material and lighting
 
@@ -336,6 +342,53 @@ function configureTexture(image) {
     metalicImage = document.getElementById("metalic-texture");
     woolImage = document.getElementById("wool-texture");
     woodImage = document.getElementById("wood-texture");
+
+    document.getElementById("dinoTorso").onchange = function () {
+        thetaDino[dinoTorsoId] = parseInt(event.target.value);
+    };
+
+    document.getElementById("dinoHead").onchange = function () {
+        thetaDino[dinoHeadId] = parseInt(event.target.value);
+    };
+
+    document.getElementById("dinoLeftUpperLeg").onchange = function () {
+        thetaDino[dinoLeftUpperLegId] = parseInt(event.target.value);
+    };
+
+    document.getElementById("dinoLeftLowerLeg").onchange = function () {
+        thetaDino[dinoLeftLowerLegId] = parseInt(event.target.value);
+    };
+
+    document.getElementById("dinoRightUpperLeg").onchange = function () {
+        thetaDino[dinoRightUpperLegId] = parseInt(event.target.value);
+    };
+
+    document.getElementById("dinoRightLowerLeg").onchange = function () {
+        thetaDino[dinoRightLowerLegId] = parseInt(event.target.value);
+    };
+
+    document.getElementById("dinoTail1").onchange = function () {
+        thetaDino[dinoTail1Id] = parseInt(event.target.value);
+    };
+
+    document.getElementById("dinoTail2").onchange = function () {
+        thetaDino[dinoTail2Id] = parseInt(event.target.value);
+    };
+
+    document.getElementById("dinoTail3").onchange = function () {
+        thetaDino[dinoTail3Id] = parseInt(event.target.value);
+    };
+
+    document.getElementById("animateDinoButton").onclick = function () {
+        if (dinoAnimationFlag) {
+            thetaDinoAnimation = thetaDino.slice();
+            thetaDino = thetaDinoNonAnimation.slice();
+        } else {
+            thetaDinoNonAnimation = thetaDino.slice();
+            thetaDino = thetaDinoAnimation.slice();
+        }
+        dinoAnimationFlag = !dinoAnimationFlag;
+    }
 
     document.getElementById("animateButton1").onclick = function() {
         if (animation) {
@@ -603,7 +656,7 @@ function dinoLeftUpperLeg() {
 
 function dinoLeftLowerLeg() {
     var s = scale4(dinoLowerLegWidth, dinoLowerLegHeight, dinoLowerLegDepth);
-    var instanceMatrix = mult(translate(0.65, -0.7*dinoLowerLegHeight, 0.0),s);
+    var instanceMatrix = mult(translate(0, 0.5*dinoLowerLegHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
     gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
@@ -618,7 +671,7 @@ function dinoRightUpperLeg() {
 
 function dinoRightLowerLeg() {
     var s = scale4(dinoLowerLegWidth, dinoLowerLegHeight, dinoLowerLegDepth);
-    var instanceMatrix = mult(translate(0.65, -0.7*dinoLowerLegHeight, 0.0),s);
+    var instanceMatrix = mult(translate(0, 0.5*dinoLowerLegHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
     gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
@@ -646,6 +699,18 @@ function dinoTail3() {
     var t = mult(modelViewMatrix, instanceMatrix);
     gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
+function toggleDinoSlider(state) {
+    document.getElementById("dinoTorso").disabled = state;
+    document.getElementById("dinoHead").disabled = state;
+    document.getElementById("dinoLeftUpperLeg").disabled = state;
+    document.getElementById("dinoLeftLowerLeg").disabled = state;
+    document.getElementById("dinoRightUpperLeg").disabled = state;
+    document.getElementById("dinoRightLowerLeg").disabled = state;
+    document.getElementById("dinoTail1").disabled = state;
+    document.getElementById("dinoTail2").disabled = state;
+    document.getElementById("dinoTail3").disabled = state;
 }
 
 function updateThetaFist(delta) {
@@ -934,56 +999,98 @@ var render = function() {
 */
     // Object 3 (Dino)
 
-    if (torsoFlag){
-        torsoAngle += 0.3;
-        if (torsoAngle == 2*Math.PI) {
-            torsoAngle = 0
-        }
+    if (dinoAnimationFlag) {
+        thetaDino[dinoTorsoId] += 0.3;
+        thetaDino[dinoHeadId] += 0.007;
+        thetaDino[dinoLeftUpperLegId] += 0.03;
+        thetaDino[dinoLeftLowerLegId] += 0.03;
+        thetaDino[dinoRightUpperLegId] += 0.03;
+        thetaDino[dinoRightLowerLegId] += 0.03;
+        thetaDino[dinoTail1Id] += 0.02;
+        thetaDino[dinoTail2Id] += 0.02;
+        thetaDino[dinoTail3Id] += 0.02;
     }
 
     // Torso
     modelViewMatrix = translate(1, 0, 0, 0);
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoTorsoId] + torsoAngle, 0, 1, 0));
+    modelViewMatrix = mult(modelViewMatrix, rotate(thetaDino[dinoTorsoId] - 90, 0, 1, 0));
     temp = modelViewMatrix;
     modelViewMatrix = mult(modelViewMatrix, rotate(15, 0, 0, 1));
     dinoTorso();
 
     // Head
     modelViewMatrix = temp;
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoHeadId], 0, 0, 1));
+    if (dinoAnimationFlag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(45 * Math.sin(thetaDino[dinoHeadId]), 0, 1, 0));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(thetaDino[dinoHeadId], 0, 1, 0));
+    }
     dinoHead();
 
     // LeftLeg
     modelViewMatrix = temp;
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoLeftUpperLegId], 0, 0, 1));
     modelViewMatrix = mult(modelViewMatrix, translate(0, 0, 0.5*dinoTorsoDepth + 0.5 * dinoUpperLegDepth));
     modelViewMatrix = mult(modelViewMatrix, translate(-3/14*dinoTorsoWidth, 0, 0));
+    if (dinoAnimationFlag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(25 + 30 * Math.sin(thetaDino[dinoLeftUpperLegId]), 0, 0, 1));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(25 + thetaDino[dinoLeftUpperLegId], 0, 0, 1));
+    }
     dinoLeftUpperLeg();
 
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoLeftLowerLegId], 0, 0, 1));
+    modelViewMatrix = mult(modelViewMatrix, translate(0, -0.4*dinoUpperLegHeight, 0));
+    if (dinoAnimationFlag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(160 - Math.abs(10 * Math.cos(thetaDino[dinoLeftLowerLegId])), 0, 0, 1))
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(150 - thetaDino[dinoLeftLowerLegId], 0, 0, 1))
+    }
     dinoLeftLowerLeg();
 
     // RightLeg
     modelViewMatrix = temp;
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoRightUpperLegId], 0, 0, 1));
     modelViewMatrix = mult(modelViewMatrix, translate(0, 0, -0.5*dinoTorsoDepth - 0.5 * dinoUpperLegDepth));
     modelViewMatrix = mult(modelViewMatrix, translate(-3/14*dinoTorsoWidth, 0, 0));
+    if (dinoAnimationFlag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(25 - 30 * Math.sin(thetaDino[dinoRightUpperLegId]), 0, 0, 1));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(25 + thetaDino[dinoRightUpperLegId], 0, 0, 1));
+    }
     dinoRightUpperLeg();
 
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoRightLowerLegId], 0, 0, 1));
+    modelViewMatrix = mult(modelViewMatrix, translate(0, -0.4*dinoUpperLegHeight, 0));
+    if (dinoAnimationFlag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(160 - Math.abs(10 * Math.cos(thetaDino[dinoRightLowerLegId])), 0, 0, 1));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(150 - thetaDino[dinoRightLowerLegId], 0, 0, 1));
+    }
     dinoRightLowerLeg();
 
     // Tail
     modelViewMatrix = temp;
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoTail1Id], 0, 0, 1));
-    modelViewMatrix = mult(modelViewMatrix, translate(-0.7*dinoTorsoWidth, 0.5*dinoTorsoHeight + 0.5*dinoTail1Height, 0.0));
+    modelViewMatrix = mult(modelViewMatrix, rotate(20, 0, 0, 1));
+    if (dinoAnimationFlag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(20 * Math.sin(thetaDino[dinoTail1Id]), 0, 1, 0));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(thetaDino[dinoTail1Id], 0, 1, 0));
+    }
+    modelViewMatrix = mult(modelViewMatrix, translate(-0.7*dinoTorsoWidth, 0, 0.0));
+    modelViewMatrix = mult(modelViewMatrix, translate(0, 0.5*dinoTorsoHeight + 0.5*dinoTail1Height, 0.0));
     dinoTail1();
 
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoTail2Id], 0, 0, 1));
+    if (dinoAnimationFlag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(15 * Math.sin(thetaDino[dinoTail2Id]), 0, 1, 0));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(thetaDino[dinoTail2Id], 0, 1, 0));
+    }
     modelViewMatrix = mult(modelViewMatrix, translate(-0.8*dinoTail1Width, -0.1*dinoTail2Height, 0.0));
     dinoTail2();
 
-    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoTail3Id], 0, 0, 1));
+    modelViewMatrix = mult(modelViewMatrix, rotate(3, 0, 0, 1));
+    if (dinoAnimationFlag) {
+        modelViewMatrix = mult(modelViewMatrix, rotate(10 * Math.sin(thetaDino[dinoTail3Id]), 0, 1, 0));
+    } else {
+        modelViewMatrix = mult(modelViewMatrix, rotate(thetaDino[dinoTail3Id], 0, 1, 0));
+    }
     modelViewMatrix = mult(modelViewMatrix, translate(-0.8*dinoTail2Width, -0.1*dinoTail3Height, 0.0));
     dinoTail3();
 
