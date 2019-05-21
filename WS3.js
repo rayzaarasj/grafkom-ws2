@@ -96,7 +96,6 @@ var theta2 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 // Identifier of each object parts
 
 var torsoId = 0;
-var headId  = 1;
 var head1Id = 1;
 var leftUpperArmId = 2;
 var leftLowerArmId = 3;
@@ -135,6 +134,48 @@ var angle = 0;
 
 // angle that is used to rotate the whole object
 var torsoAngle = 0;
+
+// Object 3 (Dino)
+// angle of each rotation, the order is according to the identifier
+
+var theta3 = [15,0,25,-30,25,-30,20,0,3];
+
+// Identifier of each object parts
+
+var dinoTorsoId = 0;
+var dinoHeadId = 1;
+var dinoLeftUpperLegId = 2;
+var dinoLeftLowerLegId = 3;
+var dinoRightUpperLegId = 4;
+var dinoRightLowerLegId = 5;
+var dinoTail1Id = 6;
+var dinoTail2Id = 7;
+var dinoTail3Id = 8;
+
+// The size of object parts
+var scaler = 3;
+
+var dinoTorsoWidth      = scaler * 1.4;
+var dinoTorsoHeight     = scaler * 0.8;
+var dinoTorsoDepth      = scaler * 0.7;
+var dinoHeadWidth       = scaler * 1;
+var dinoHeadHeight      = scaler * 0.75;
+var dinoHeadDepth       = scaler * 0.8;
+var dinoUpperLegWidth   = scaler * 0.55;
+var dinoUpperLegHeight  = scaler * 0.7;
+var dinoUpperLegDepth   = scaler * 0.4;
+var dinoLowerLegWidth   = scaler * 0.4;
+var dinoLowerLegHeight  = scaler * 0.8;
+var dinoLowerLegDepth   = scaler * 0.4;
+var dinoTail1Width      = scaler * 0.7;
+var dinoTail1Height     = scaler * 0.4;
+var dinoTail1Depth      = scaler * 0.45;
+var dinoTail2Width      = scaler * 0.5;
+var dinoTail2Height     = scaler * 0.25;
+var dinoTail2Depth      = scaler * 0.33;
+var dinoTail3Width      = scaler * 0.35;
+var dinoTail3Height     = scaler * 0.15;
+var dinoTail3Depth      = scaler * 0.2;
 
 // Parameters to control the material and lighting
 
@@ -214,7 +255,6 @@ function scale4(a, b, c) {
 }
 
 function configureTexture(image) {
-    texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
@@ -274,134 +314,36 @@ function configureTexture(image) {
     var vTexCoord = gl.getAttribLocation(program, "vTexCoord");
     gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vTexCoord);
-    
+
     var ambientProduct = mult(lightAmbient, materialAmbient);
     var diffuseProduct = mult(lightDiffuse, materialDiffuse);
     var specularProduct = mult(lightSpecular, materialSpecular);
-    
+
     modelViewMatrixLoc = gl.getUniformLocation(program, "modelViewMatrix");
 
     gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"), flatten(ambientProduct));
     gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"), flatten(diffuseProduct));
     gl.uniform4fv(gl.getUniformLocation(program, "specularProduct"), flatten(specularProduct));
     gl.uniform4fv(gl.getUniformLocation(program, "lightPosition"), flatten(lightPosition));
-    
+
     gl.uniform1f(gl.getUniformLocation(program, "shininess"), materialShininess);
-        
+
     projectionMatrix = ortho(-10, 10, -10, 10, -10, 10);
     gl.uniformMatrix4fv(gl.getUniformLocation(program, "projectionMatrix"),  false, flatten(projectionMatrix));
-        
+
     jeansImage = document.getElementById("jeans-texture");
     lowerFingerImage = document.getElementById("lower-finger-texture");
     metalicImage = document.getElementById("metalic-texture");
     woolImage = document.getElementById("wool-texture");
     woodImage = document.getElementById("wood-texture");
 
-    // Slider for Object 1 (Hand)
-
-    document.getElementById("PalmYSlider").onchange = function(event) {
-        theta1[PalmY] = event.target.value;
-    };
-
-    document.getElementById("PalmZSlider").onchange = function(event) {
-        theta1[PalmZ] = event.target.value;
-    };
-
-    document.getElementById("LowerPinkieSlider").onchange = function(event) {
-        theta1[LowerPinkie] = event.target.value;
-    };
-
-    document.getElementById("UpperPinkieSlider").onchange = function(event) {
-        theta1[UpperPinkie] =  event.target.value;
-    };
-
-    document.getElementById("LowerRingSlider").onchange = function(event) {
-        theta1[LowerRing] = event.target.value;
-    };
-
-    document.getElementById("UpperRingSlider").onchange = function(event) {
-        theta1[UpperRing] =  event.target.value;
-    };
-
-    document.getElementById("LowerMiddleSlider").onchange = function(event) {
-        theta1[LowerMiddle] = event.target.value;
-    };
-
-    document.getElementById("UpperMiddleSlider").onchange = function(event) {
-        theta1[UpperMiddle] =  event.target.value;
-    };
-
-    document.getElementById("LowerIndexSlider").onchange = function(event) {
-        theta1[LowerIndex] = event.target.value;
-    };
-
-    document.getElementById("UpperIndexSlider").onchange = function(event) {
-        theta1[UpperIndex] =  event.target.value;
-    };
-
-    document.getElementById("LowerThumbSlider").onchange = function(event) {
-        theta1[LowerThumb] =  event.target.value;
-    };
-
-    document.getElementById("UpperThumbSlider").onchange = function(event) {
-        theta1[UpperThumb] =  event.target.value;
-    };
-
-    // Slider for Object 2 (Robot)
-
-    document.getElementById("slider0").onchange = function(event) {
-        theta2[torsoId ] = parseInt(event.target.value);
-    };
-
-    document.getElementById("slider1").onchange = function(event) {
-        theta2[head1Id] = parseInt(event.target.value);
-    };
-
-    document.getElementById("slider2").onchange = function(event) {
-        theta2[leftUpperArmId] = parseInt(event.target.value);
-    };
-
-    document.getElementById("slider3").onchange = function(event) {
-        theta2[leftLowerArmId] =  parseInt(event.target.value);
-    };
-
-    document.getElementById("slider4").onchange = function(event) {
-        theta2[rightUpperArmId] = parseInt(event.target.value);
-    };
-
-    document.getElementById("slider5").onchange = function(event) {
-        theta2[rightLowerArmId] =  parseInt(event.target.value);
-    };
-
-    document.getElementById("slider6").onchange = function(event) {
-        theta2[leftUpperLegId] = parseInt(event.target.value);
-    };
-
-    document.getElementById("slider7").onchange = function(event) {
-        theta2[leftLowerLegId] = parseInt(event.target.value);
-    };
-
-    document.getElementById("slider8").onchange = function(event) {
-        theta2[rightUpperLegId] = parseInt(event.target.value);
-    };
-
-    document.getElementById("slider9").onchange = function(event) {
-        theta2[rightLowerLegId] = parseInt(event.target.value);
-    };
-
-    document.getElementById("slider10").onchange = function(event) {
-        theta2[head2Id] = parseInt(event.target.value);
-    };
-
     document.getElementById("animateButton1").onclick = function() {
         if (animation) {
             theta1Animation = theta1.slice();
             theta1 = theta1NonAnimation.slice();
-            toggleSlider(false);
         } else {
             theta1NonAnimation = theta1.slice();
             theta1 = theta1Animation.slice();
-            toggleSlider(true);
         }
         animation = !animation;
     };
@@ -415,22 +357,43 @@ function configureTexture(image) {
         torsoFlag = !torsoFlag;
     };
 
+    texture = gl.createTexture();
+
     render();
 }
 
-function toggleSlider(state) {
-    document.getElementById("PalmYSlider").disabled = state;
-    document.getElementById("PalmZSlider").disabled = state;
-    document.getElementById("LowerPinkieSlider").disabled = state;
-    document.getElementById("UpperPinkieSlider").disabled = state;
-    document.getElementById("LowerRingSlider").disabled = state;
-    document.getElementById("UpperRingSlider").disabled = state;
-    document.getElementById("LowerMiddleSlider").disabled = state;
-    document.getElementById("UpperMiddleSlider").disabled = state;
-    document.getElementById("LowerIndexSlider").disabled = state;
-    document.getElementById("UpperIndexSlider").disabled = state;
-    document.getElementById("LowerThumbSlider").disabled = state;
-    document.getElementById("UpperThumbSlider").disabled = state;
+// Instantiate Object Parts for Room
+
+function ceiling() {
+    var s = scale4(30, 0.1, 20);
+    var instanceMatrix = mult(translate(0.0, 9.5, 0.0),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
+function leftWall() {
+    var s = scale4(20, 18, 0.1);
+    var instanceMatrix = mult(translate(-8, 0.0, 0.0),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
+function rightWall() {
+    var s = scale4(20, 18, 0.1);
+    var instanceMatrix = mult(translate(8, 0.0, 0.0),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
+function backWall() {
+    var s = scale4(30, 18, 0.1);
+    var instanceMatrix = mult(translate(0.0, -5, 0.0),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
 // Instantiate Object Parts for Object1 (Hand)
@@ -613,33 +576,73 @@ function floor() {
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
-function ceiling() {
-    var s = scale4(30, 0.1, 20);
-    var instanceMatrix = mult(translate(0.0, 9.5, 0.0),s);
+// Instantiate Object Parts for Object3 (Dino)
+
+function dinoTorso() {
+    var s = scale4(dinoTorsoWidth, dinoTorsoHeight, dinoTorsoDepth);
+    var instanceMatrix = mult(translate(0.0, 0.5*dinoTorsoHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
     gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
-function leftWall() {
-    var s = scale4(20, 18, 0.1);
-    var instanceMatrix = mult(translate(-8, 0.0, 0.0),s);
+function dinoHead() {
+    var s = scale4(dinoHeadWidth, dinoHeadHeight, dinoHeadDepth);
+    var instanceMatrix = mult(translate(0.9*dinoHeadWidth, dinoTorsoHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
     gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
-function rightWall() {
-    var s = scale4(20, 18, 0.1);
-    var instanceMatrix = mult(translate(8, 0.0, 0.0),s);
+function dinoLeftUpperLeg() {
+    var s = scale4(dinoUpperLegWidth, dinoUpperLegHeight, dinoUpperLegDepth);
+    var t = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
+function dinoLeftLowerLeg() {
+    var s = scale4(dinoLowerLegWidth, dinoLowerLegHeight, dinoLowerLegDepth);
+    var instanceMatrix = mult(translate(0.65, -0.7*dinoLowerLegHeight, 0.0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
     gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
 }
 
-function backWall() {
-    var s = scale4(30, 18, 0.1);
-    var instanceMatrix = mult(translate(0.0, -5, 0.0),s);
+function dinoRightUpperLeg() {
+    var s = scale4(dinoUpperLegWidth, dinoUpperLegHeight, dinoUpperLegDepth);
+    var t = mult(modelViewMatrix, s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
+function dinoRightLowerLeg() {
+    var s = scale4(dinoLowerLegWidth, dinoLowerLegHeight, dinoLowerLegDepth);
+    var instanceMatrix = mult(translate(0.65, -0.7*dinoLowerLegHeight, 0.0),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
+function dinoTail1() {
+    var s = scale4(dinoTail1Width, dinoTail1Height, dinoTail1Depth);
+    var instanceMatrix = mult(translate(0,0,0),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
+function dinoTail2() {
+    var s = scale4(dinoTail2Width, dinoTail2Height, dinoTail2Depth);
+    var instanceMatrix = mult(translate(0,0,0),s);
+    var t = mult(modelViewMatrix, instanceMatrix);
+    gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
+    gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
+}
+
+function dinoTail3() {
+    var s = scale4(dinoTail3Width, dinoTail3Height, dinoTail3Depth);
+    var instanceMatrix = mult(translate(0,0,0),s);
     var t = mult(modelViewMatrix, instanceMatrix);
     gl.uniformMatrix4fv(modelViewMatrixLoc,  false, flatten(t));
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
@@ -674,9 +677,9 @@ function updateAnimation() {
                 break;
             }
         }
-        
+
         theta1[PalmZ] += directionRL;
-        
+
         if (Math.abs(theta1[PalmZ]) == 45) {
             directionRL = -directionRL;
         }
@@ -703,44 +706,47 @@ function updateAnimation() {
         default:
 
         break;
-    } 
+    }
 }
 
 var render = function() {
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    var temp;
+
 
     // Background
     configureTexture(woodImage);
-    // Floor
-    modelViewMatrix = rotate(20,1,0,0);
-    floor();
 
-    // Ceiling
-    modelViewMatrix = rotate(-20,1,0,0);
-    ceiling();
+    // // Floor
+    // modelViewMatrix = rotate(20,1,0,0);
+    // floor();
 
-    // Left Wall
-    modelViewMatrix = translate(-5,1,-10,0);
-    modelViewMatrix = mult(modelViewMatrix,rotate(60,0,1,0));
-    leftWall();
+    // // Ceiling
+    // modelViewMatrix = rotate(-20,1,0,0);
+    // ceiling();
 
-    // Right Wall
-    modelViewMatrix = translate(5,1,-10,0);
-    modelViewMatrix = mult(modelViewMatrix,rotate(-60,0,1,0));
-    rightWall();
+    // // Left Wall
+    // modelViewMatrix = translate(-5,1,-10,0);
+    // modelViewMatrix = mult(modelViewMatrix,rotate(60,0,1,0));
+    // leftWall();
 
-    // Back Wall
-    modelViewMatrix = translate(0,11.5,-10,0);
-    backWall();
+    // // Right Wall
+    // modelViewMatrix = translate(5,1,-10,0);
+    // modelViewMatrix = mult(modelViewMatrix,rotate(-60,0,1,0));
+    // rightWall();
 
+    // // Back Wall
+    // modelViewMatrix = translate(0,11.5,-10,0);
+    // backWall();
+
+/*
     // Object 1 (Hand)
 
     if (animation) {
         updateAnimation();
     }
 
-    var temp;
 
     // Palm
     configureTexture(woolImage);
@@ -763,7 +769,7 @@ var render = function() {
 
     // Ring Finger
     modelViewMatrix = temp;
-    
+
     configureTexture(lowerFingerImage);
     modelViewMatrix = mult(modelViewMatrix, translate(0.0, PALM_HEIGHT, 0.0));
     modelViewMatrix = mult(modelViewMatrix, rotate(theta1[LowerRing], 1, 0, 0));
@@ -886,7 +892,7 @@ var render = function() {
 
     // LeftLeg
     modelViewMatrix = temp;
-    
+
     configureTexture(jeansImage);
     modelViewMatrix = mult(modelViewMatrix, translate(-(0.3*torsoWidth), 0.1*upperLegHeight, 0.0));
     if (flag) {
@@ -925,6 +931,61 @@ var render = function() {
         modelViewMatrix = mult(modelViewMatrix, rotate(theta2[rightLowerLegId], 1, 0, 0));
     }
     rightLowerLeg();
+*/
+    // Object 3 (Dino)
+
+    if (torsoFlag){
+        torsoAngle += 0.3;
+        if (torsoAngle == 2*Math.PI) {
+            torsoAngle = 0
+        }
+    }
+
+    // Torso
+    modelViewMatrix = translate(1, 0, 0, 0);
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoTorsoId] + torsoAngle, 0, 1, 0));
+    temp = modelViewMatrix;
+    modelViewMatrix = mult(modelViewMatrix, rotate(15, 0, 0, 1));
+    dinoTorso();
+
+    // Head
+    modelViewMatrix = temp;
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoHeadId], 0, 0, 1));
+    dinoHead();
+
+    // LeftLeg
+    modelViewMatrix = temp;
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoLeftUpperLegId], 0, 0, 1));
+    modelViewMatrix = mult(modelViewMatrix, translate(0, 0, 0.5*dinoTorsoDepth + 0.5 * dinoUpperLegDepth));
+    modelViewMatrix = mult(modelViewMatrix, translate(-3/14*dinoTorsoWidth, 0, 0));
+    dinoLeftUpperLeg();
+
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoLeftLowerLegId], 0, 0, 1));
+    dinoLeftLowerLeg();
+
+    // RightLeg
+    modelViewMatrix = temp;
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoRightUpperLegId], 0, 0, 1));
+    modelViewMatrix = mult(modelViewMatrix, translate(0, 0, -0.5*dinoTorsoDepth - 0.5 * dinoUpperLegDepth));
+    modelViewMatrix = mult(modelViewMatrix, translate(-3/14*dinoTorsoWidth, 0, 0));
+    dinoRightUpperLeg();
+
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoRightLowerLegId], 0, 0, 1));
+    dinoRightLowerLeg();
+
+    // Tail
+    modelViewMatrix = temp;
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoTail1Id], 0, 0, 1));
+    modelViewMatrix = mult(modelViewMatrix, translate(-0.7*dinoTorsoWidth, 0.5*dinoTorsoHeight + 0.5*dinoTail1Height, 0.0));
+    dinoTail1();
+
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoTail2Id], 0, 0, 1));
+    modelViewMatrix = mult(modelViewMatrix, translate(-0.8*dinoTail1Width, -0.1*dinoTail2Height, 0.0));
+    dinoTail2();
+
+    modelViewMatrix = mult(modelViewMatrix, rotate(theta3[dinoTail3Id], 0, 0, 1));
+    modelViewMatrix = mult(modelViewMatrix, translate(-0.8*dinoTail2Width, -0.1*dinoTail3Height, 0.0));
+    dinoTail3();
 
     requestAnimFrame(render);
 }

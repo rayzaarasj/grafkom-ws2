@@ -71,91 +71,6 @@ void main() {
     </canvas>
     <div style="display: flex">
         <div>
-            <h2>Slider for Hand</h2>
-            <div>
-                Palm Y Angle -180 <input id="PalmYSlider" type="range" min="-180" max="180" step="10" value="0"/>
-                180
-            </div>
-            
-            <br/>
-            
-            <div>
-                Palm Z Angle -45 <input id="PalmZSlider" type="range" min="-45" max="45" step="5" value="0"/>
-                45
-            </div>
-            
-            <br/>
-            
-            <div>
-                Lower Pinkie Angle 0 <input id="LowerPinkieSlider" type="range" min="0" max="90" step="10" value="0"/>
-                90
-            </div>
-            
-            <br/>
-            
-            <div>
-                Upper Pinkie Angle 0 <input id="UpperPinkieSlider" type="range" min="0" max="90" step="10" value="0"/>
-                90
-            </div>
-            
-            <br/>
-            
-            <div>
-                Lower Ring Angle 0 <input id="LowerRingSlider" type="range" min="0" max="90" step="10" value="0"/>
-                90
-            </div>
-            
-            <br/>
-            
-            <div>
-                Upper Ring Angle 0 <input id="UpperRingSlider" type="range" min="0" max="90" step="10" value="0"/>
-                90
-            </div>
-            
-            <br/>
-            
-            <div>
-                Lower Middle Angle 0 <input id="LowerMiddleSlider" type="range" min="0" max="90" step="10" value="0"/>
-                90
-            </div>
-            
-            <br/>
-            
-            <div>
-                Upper Middle Angle 0 <input id="UpperMiddleSlider" type="range" min="0" max="90" step="10" value="0"/>
-                90
-            </div>
-            
-            <br/>
-            
-            <div>
-                Lower Index Angle 0 <input id="LowerIndexSlider" type="range" min="0" max="90" step="10" value="0"/>
-                90
-            </div>
-            
-            <br/>
-            
-            <div>
-                Upper Index Angle 0 <input id="UpperIndexSlider" type="range" min="0" max="90" step="10" value="0"/>
-                90
-            </div>
-                
-            <br/>
-            
-            <div>
-                Lower Thumb Angle 0 <input id="LowerThumbSlider" type="range" min="0" max="90" step="10" value="0"/>
-                90
-            </div>
-            
-            <br/>
-            
-            <div>
-                Upper Thumb Angle 0 <input id="UpperThumbSlider" type="range" min="0" max="90" step="10" value="0"/>
-                90
-            </div>
-            
-            <br/>
-                
             <div>
                 <button id="animateButton1">
                     Toggle Animation
@@ -163,86 +78,16 @@ void main() {
             </div>
         </div>
         <div style="margin-left:5rem">
-            <h2>Slider for Robot</h2>
             <div>
-                Torso Y-Rotation -180 <input id="slider0" type="range"
-                 min="-180" max="180" step="10" value="0"
-                  />
-                 180
-                </div><br/>
-                <div>
-                Head Y-Rotation -90 <input id="slider10" type="range"
-                 min="-90" max="90" step="10" value="0"
-                  />
-                 90
-                </div><br/>
-                
-                <div>
-                Head X-Rotation -90 <input id="slider1" type="range"
-                 min="-90" max="90" step="10" value="0"
-                  />
-                 90
-                </div><br/>
-                
-                <div id="slider2">
-                Left Upper Arm X-Rotation -60 <input id="slider2" type="range"
-                 min="-60" max="180" step="10" value="0"
-                  />
-                 180
-                </div><br/>
-                <div>
-                Left Lower Arm X-Rotation 0 <input id="slider3" type="range"
-                 min="0" max="160" step="10" value="0"
-                  />
-                 160
-                </div><br/>
-                <div>
-                Right Upper Arm X-Rotation -60 <input id="slider4" type="range"
-                 min="-60" max="180" step="10" value="0"
-                  />
-                 180
-                </div><br/>
-                <div>
-                Right Lower Arm X-Rotation 0 <input id="slider5" type="range"
-                 min="0" max="160" step="10" value="0"
-                  />
-                 160
-                </div><br/>
-                <div>
-                Left Upper Leg X-Rotation -90 <input id="slider6" type="range"
-                 min="-90" max="90" step="10" value="0"
-                  />
-                 90
-                </div><br/>
-                <div>
-                Left Lower Leg X-Rotation 0 <input id="slider7" type="range"
-                 min="0" max="150" step="10" value="0"
-                  />
-                 150
-                </div><br/>
-                <div>
-                Right Upper Leg X-Rotation -90 <input id="slider8" type="range"
-                 min="-90" max="90" step="10" value="0"
-                  />
-                 90
-                </div><br/>
-                
-                <div>
-                Right Lower Leg X-Rotation 0 <input id="slider9" type="range"
-                 min="0" max="150" step="10" value="0"
-                  />
-                 150
-                </div><br/>
-                <div>
-                 <button id="animateButton2">
-                  Animate
-                 </button>
-                </div>
-                <div>
-                 <button id="rotateButton">
-                  Rotate Object
-                 </button>
-                </div>
+                <button id="animateButton2">
+                Animate
+                </button>
+            </div>
+            <div>
+                <button id="rotateButton">
+                Rotate Object
+                </button>
+            </div>
         </div>
     </div>
     <img id = "jeans-texture" src = "jeans-texture.jpg" hidden></img>
